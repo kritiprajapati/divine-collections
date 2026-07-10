@@ -1,0 +1,215 @@
+/* ProductDetail.module.css */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.18s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.modal {
+  background: var(--white);
+  border-radius: var(--r-xl);
+  width: 100%;
+  max-width: 780px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: popIn 0.2s ease;
+}
+
+@keyframes popIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+.closeBtn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: var(--ivory-dark);
+  color: var(--text-muted);
+  font-size: 16px;
+  cursor: pointer;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition);
+}
+.closeBtn:hover { background: var(--border); }
+
+.inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 380px;
+}
+
+/* Image side */
+.imageWrap {
+  background: var(--ivory-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-xl) 0 0 var(--r-xl);
+  position: relative;
+  min-height: 300px;
+}
+
+.emoji {
+  font-size: 100px;
+  line-height: 1;
+}
+
+.badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  padding: 5px 12px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.badgeNew      { background: #E3F2FD; color: #1565C0; }
+.badgeFeatured { background: #FFF3CD; color: #A66A00; }
+
+/* Details side */
+.details {
+  padding: 36px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.category {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--sage);
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.25;
+}
+
+.brand {
+  font-size: 14px;
+  color: var(--text-light);
+}
+
+.stockPill {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 14px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 600;
+  width: fit-content;
+}
+.inStock  { background: var(--green-pale); color: var(--green); }
+.outStock { background: #FDECEA; color: #B03A2E; }
+
+.desc {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+
+/* Tags */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+.tag {
+  padding: 4px 10px;
+  border-radius: 100px;
+  background: var(--sage-light);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* Price + buy */
+.priceRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-light);
+  gap: 12px;
+}
+
+.price {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--green);
+}
+.unit {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-light);
+}
+
+.btnWA {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 20px;
+  border-radius: var(--r);
+  border: none;
+  background: var(--green);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition);
+  white-space: nowrap;
+}
+.btnWA:hover { background: var(--green-light); }
+.btnWADisabled {
+  background: var(--border);
+  color: var(--text-light);
+  cursor: not-allowed;
+}
+.btnWADisabled:hover { background: var(--border); }
+.waIcon { width: 18px; height: 18px; }
+
+/* Responsive */
+@media (max-width: 640px) {
+  .inner { grid-template-columns: 1fr; }
+  .imageWrap {
+    border-radius: var(--r-xl) var(--r-xl) 0 0;
+    min-height: 220px;
+  }
+  .emoji   { font-size: 72px; }
+  .details { padding: 24px 20px; }
+  .name    { font-size: 22px; }
+  .price   { font-size: 22px; }
+}

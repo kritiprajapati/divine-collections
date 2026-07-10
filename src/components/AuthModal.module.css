@@ -1,0 +1,204 @@
+/* AuthModal.module.css */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.52);
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;   /* bottom-sheet on mobile */
+  justify-content: center;
+  padding: 0;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  animation: fadeIn 0.18s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.modal {
+  background: var(--white);
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
+  padding: 12px 24px 36px;
+  width: 100%;
+  max-width: 440px;
+  position: relative;
+  max-height: 92vh;
+  overflow-y: auto;
+  animation: slideUp 0.22s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* Drag handle — visible on mobile only */
+.dragHandle {
+  width: 40px;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin: 0 auto 20px;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--text-muted);
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px;
+  border-radius: var(--r-sm);
+  transition: color var(--transition);
+}
+.closeBtn:hover { color: var(--text); }
+
+.logo {
+  width: 52px;
+  height: 52px;
+  background: var(--green);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--gold);
+  margin: 0 auto 16px;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text);
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.sub {
+  font-size: 13px;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+/* Product preview */
+.productPreview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--sage-light);
+  border-radius: var(--r);
+  padding: 12px;
+  margin-bottom: 18px;
+}
+
+.previewEmoji {
+  width: 44px;
+  height: 44px;
+  background: var(--border-light);
+  border-radius: var(--r-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.previewName  { font-size: 14px; font-weight: 600; color: var(--text); }
+.previewPrice { font-size: 13px; color: var(--green); font-weight: 500; margin-top: 2px; }
+
+/* Error */
+.error {
+  background: var(--error-bg);
+  color: var(--error);
+  font-size: 13px;
+  padding: 9px 13px;
+  border-radius: var(--r-sm);
+  margin-bottom: 14px;
+}
+
+/* Inputs */
+.input {
+  width: 100%;
+  height: 48px;
+  border-radius: var(--r);
+  border: 1.5px solid var(--border);
+  background: var(--ivory);
+  padding: 0 14px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--text);
+  outline: none;
+  margin-bottom: 10px;
+  transition: border-color var(--transition);
+  -webkit-appearance: none;
+  display: block;
+}
+.input:focus { border-color: var(--green); }
+.input::placeholder { color: var(--text-light); }
+
+/* Submit button */
+.submitBtn {
+  width: 100%;
+  height: 50px;
+  border-radius: var(--r);
+  border: none;
+  background: var(--green);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 4px;
+  margin-bottom: 16px;
+  transition: background var(--transition);
+  -webkit-appearance: none;
+}
+.submitBtn:hover { background: var(--green-light); }
+
+/* Switch mode */
+.switchMode {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.switchBtn {
+  background: none;
+  border: none;
+  color: var(--green);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-body);
+  padding: 0;
+}
+.switchBtn:hover { text-decoration: underline; }
+
+/* On tablet/desktop — centered modal, not bottom sheet */
+@media (min-width: 600px) {
+  .overlay { align-items: center; padding: 20px; }
+  .modal {
+    border-radius: var(--r-xl);
+    padding: 32px;
+    animation: popIn 0.2s ease;
+  }
+  .dragHandle { display: none; }
+
+  @keyframes popIn {
+    from { transform: scale(0.96) translateY(10px); opacity: 0; }
+    to   { transform: scale(1)    translateY(0);    opacity: 1; }
+  }
+}

@@ -1,0 +1,96 @@
+/* ─────────────────────────────────────────
+   DIVINE COLLECTIONS — Global Styles
+   Design tokens, resets, typography, utils
+───────────────────────────────────────── */
+
+/* Google Fonts loaded in index.html */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* Palette */
+  --green:        #1B4332;
+  --green-light:  #2D6A4F;
+  --green-pale:   #D8F3DC;
+  --gold:         #C9A84C;
+  --gold-light:   #F0D79A;
+  --ivory:        #FDFBF7;
+  --ivory-dark:   #F5F1E8;
+  --sage:         #95B8A0;
+  --sage-light:   #E8F4EE;
+
+  /* Text */
+  --text:         #1A1A1A;
+  --text-muted:   #5A6B5E;
+  --text-light:   #8A9E91;
+
+  /* Borders */
+  --border:       #D4E6D9;
+  --border-light: #EAF3EC;
+
+  /* Misc */
+  --white:        #FFFFFF;
+  --error:        #B03A2E;
+  --error-bg:     #FDECEA;
+  --success:      #1B4332;
+  --success-bg:   #D8F3DC;
+
+  /* Radius */
+  --r-xs:  4px;
+  --r-sm:  6px;
+  --r:     10px;
+  --r-lg:  16px;
+  --r-xl:  24px;
+
+  /* Shadows */
+  --shadow:       0 2px 12px rgba(27,67,50,0.08);
+  --shadow-hover: 0 8px 32px rgba(27,67,50,0.16);
+  --shadow-modal: 0 24px 64px rgba(0,0,0,0.18);
+
+  /* Typography */
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body:    'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Transitions */
+  --transition: 0.18s ease;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--ivory);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar        { width: 6px; height: 6px; }
+::-webkit-scrollbar-track  { background: var(--ivory); }
+::-webkit-scrollbar-thumb  { background: var(--sage); border-radius: 3px; }
+
+/* Focus */
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* Selection */
+::selection {
+  background: var(--gold-light);
+  color: var(--green);
+}
+
+/* Utility: hide scrollbar but allow scroll */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }

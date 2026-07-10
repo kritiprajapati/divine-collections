@@ -1,0 +1,48 @@
+/* WAFloat.module.css */
+
+.floatBtn {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 150;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #25D366;
+  color: #fff;
+  text-decoration: none;
+  padding: 13px 20px 13px 16px;
+  border-radius: 100px;
+  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.45);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.floatBtn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(37, 211, 102, 0.55);
+}
+
+.icon {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.label {
+  white-space: nowrap;
+}
+
+/* On mobile, show icon only to save space */
+@media (max-width: 480px) {
+  .floatBtn {
+    bottom: 20px;
+    right: 20px;
+    padding: 14px;
+    border-radius: 50%;
+  }
+  .label { display: none; }
+  .icon  { width: 26px; height: 26px; }
+}

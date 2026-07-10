@@ -1,0 +1,212 @@
+/* Hero.module.css */
+
+.hero {
+  background: var(--green);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 80px 48px 60px;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 80% 50%, rgba(201, 168, 76, 0.12) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+/* Split layout */
+.inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  position: relative;
+}
+
+/* Left */
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold-light);
+  margin-bottom: 16px;
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 18px;
+}
+
+.accent {
+  color: var(--gold);
+  font-style: normal;
+}
+
+.sub {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.68);
+  font-weight: 300;
+  line-height: 1.7;
+  margin-bottom: 32px;
+}
+
+/* Stats */
+.stats {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 36px;
+}
+
+.stat { text-align: center; }
+
+.statNum {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--gold);
+}
+
+.statLabel {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 3px;
+}
+
+.statDivider {
+  width: 1px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Shop Now button */
+.scrollBtn {
+  align-self: flex-start;
+  height: 48px;
+  padding: 0 28px;
+  border-radius: 100px;
+  border: 2px solid var(--gold);
+  background: transparent;
+  color: var(--gold);
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+}
+.scrollBtn:hover {
+  background: var(--gold);
+  color: var(--green);
+}
+
+/* Right: showcase */
+.right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.showcase {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  width: 100%;
+  max-width: 380px;
+}
+
+.showcaseItem {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--r-lg);
+  padding: 20px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.4s ease;
+  cursor: default;
+}
+
+.showcaseActive {
+  background: rgba(201, 168, 76, 0.18);
+  border-color: var(--gold);
+  transform: scale(1.06);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.showcaseEmoji {
+  font-size: 36px;
+  line-height: 1;
+}
+
+.showcaseLabel {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+}
+
+/* Scroll indicator at bottom */
+.scrollIndicator {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.scrollDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  animation: bounce 1.6s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); opacity: 0.4; }
+  50%       { transform: translateY(8px); opacity: 1; }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero  { padding: 60px 24px 48px; min-height: 100vh; }
+  .inner { grid-template-columns: 1fr; gap: 40px; }
+  .right { order: -1; }
+  .showcase { max-width: 320px; gap: 10px; }
+  .showcaseEmoji { font-size: 28px; }
+  .heading { font-size: clamp(24px, 7vw, 36px); }
+  .scrollBtn { align-self: stretch; text-align: center; }
+}
+
+@media (max-width: 480px) {
+  .hero    { padding: 48px 16px 40px; }
+  .stats   { gap: 16px; }
+  .statNum { font-size: 20px; }
+  .statDivider { display: none; }
+  .showcase { grid-template-columns: repeat(3, 1fr); max-width: 100%; }
+}
