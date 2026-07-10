@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Fuse from 'fuse.js';
 
 import Header        from './components/Header';
@@ -10,20 +10,26 @@ import AuthModal     from './components/AuthModal';
 import AboutUs       from './components/AboutUs';
 import ContactUs     from './components/ContactUs';
 import WAFloat       from './components/WAFloat';
+import AdminPanel from './pages/AdminPanel';
 
-import { PRODUCTS, CATEGORIES } from './data/products';
+import { PRODUCTS as SEED_PRODUCTS, CATEGORIES } from './data/products';
 import { FUSE_OPTIONS, buildWAUrl } from './utils/constants';
+import { subscribeToProducts } from './firebase/products';
+import { onAuthChange, logoutUser } from './firebase/auth';
 
 import styles from './App.module.css';
-
-const fuse = new Fuse(PRODUCTS, FUSE_OPTIONS);
 
 export default function App() {
   // Auth
   const [user, setUser]              = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
   const [showModal, setShowModal]    = useState(false);
   const [modalMode, setModalMode]    = useState('login');
   const [pendingProduct, setPending] = useState(null);
+
+  // Products from Firestore
+  const [products, setProducts] = useState(SEED_PRODUCTS);
+  const [productsLoading, setProductsLoading] = useState(true);
 
   // Product detail
   const [detailProduct, setDetailProduct] = useState(null);
@@ -34,17 +40,50 @@ export default function App() {
   const [sortBy, setSortBy]           = useState('default');
   const [stockOnly, setStockOnly]     = useState(false);
 
+  // Listen to Firebase auth state
+  useEffect(() => {
+    const unsub = onAuthChange(firebaseUser => {
+      if (firebaseUser) {
+        setUser({
+          name: firebaseUser.displayName || firebaseUser.email.split('@')[0],
+          email: firebaseUser.email,
+          uid: firebaseUser.uid,
+        });
+      } else {
+        setUser(null);
+      }
+      setAuthLoading(false);
+    });
+    return unsub;
+  }, []);
+
+  // Listen to Firestore products in real time
+  useEffect(() => {
+    const unsub = subscribeToProducts(firestoreProducts => {
+      if (firestoreProducts.length > 0) {
+        setProducts(firestoreProducts);
+      } else {
+        // Firestore is empty — use seed data
+        setProducts(SEED_PRODUCTS);
+      }
+      setProductsLoading(false);
+    });
+    return unsub;
+  }, []);
+
+  // Rebuild Fuse index when products change
+  const fuse = useMemo(() => new Fuse(products, FUSE_OPTIONS), [products]);
+
   const filteredProducts = useMemo(() => {
-    console.log('Active category:', activeCategory);
     let results = searchQuery.trim().length > 1
       ? fuse.search(searchQuery).map(r => r.item)
-      : PRODUCTS;
+      : products;
     if (activeCategory !== 'All') results = results.filter(p => p.category === activeCategory);
     if (stockOnly) results = results.filter(p => p.inStock);
     if (sortBy === 'low')  return [...results].sort((a, b) => a.price - b.price);
     if (sortBy === 'high') return [...results].sort((a, b) => b.price - a.price);
     return results;
-  }, [searchQuery, activeCategory, sortBy, stockOnly]);
+  }, [searchQuery, activeCategory, sortBy, stockOnly, products, fuse]);
 
   function handleBuy(product) {
     if (!product.inStock) return;
@@ -57,10 +96,6 @@ export default function App() {
     window.open(buildWAUrl(product.name, product.price), '_blank', 'noopener,noreferrer');
   }
 
-  function handleViewDetail(product) {
-    setDetailProduct(product);
-  }
-
   function handleAuth(userData) {
     setUser(userData);
     setShowModal(false);
@@ -70,8 +105,26 @@ export default function App() {
     }
   }
 
-  const inStockCount  = PRODUCTS.filter(p => p.inStock).length;
+  async function handleLogout() {
+    await logoutUser();
+    setUser(null);
+  }
+
+  const inStockCount  = products.filter(p => p.inStock).length;
   const categoryCount = CATEGORIES.length - 1;
+
+  if (authLoading) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--green)' }}>
+        <div style={{ color: 'var(--gold)', fontFamily: 'var(--font-display)', fontSize: '24px' }}>Divine Collections</div>
+      </div>
+    );
+  }
+
+  // Admin route
+  if (window.location.pathname === '/admin') {
+    return <AdminPanel />;
+  }
 
   return (
     <>
@@ -81,11 +134,11 @@ export default function App() {
         onSearch={setSearchQuery}
         onLogin={() => { setModalMode('login'); setShowModal(true); setPending(null); }}
         onRegister={() => { setModalMode('register'); setShowModal(true); setPending(null); }}
-        onLogout={() => setUser(null)}
+        onLogout={handleLogout}
       />
 
       <Hero
-        totalProducts={PRODUCTS.length}
+        totalProducts={products.length}
         inStockCount={inStockCount}
         categoryCount={categoryCount}
         onCategoryClick={setCategory}
@@ -104,7 +157,12 @@ export default function App() {
           searchQuery={searchQuery}
         />
 
-        {filteredProducts.length === 0 ? (
+        {productsLoading ? (
+          <div className={styles.empty}>
+            <div className={styles.emptyIcon}>⏳</div>
+            <h3 className={styles.emptyTitle}>Loading products…</h3>
+          </div>
+        ) : filteredProducts.length === 0 ? (
           <div className={styles.empty}>
             <div className={styles.emptyIcon}>🔍</div>
             <h3 className={styles.emptyTitle}>No products found</h3>
@@ -117,7 +175,7 @@ export default function App() {
                 key={product.id}
                 product={product}
                 onBuy={handleBuy}
-                onViewDetail={handleViewDetail}
+                onViewDetail={setDetailProduct}
               />
             ))}
           </div>

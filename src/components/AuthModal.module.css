@@ -187,6 +187,47 @@
 }
 .switchBtn:hover { text-decoration: underline; }
 
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 4px 0 12px;
+  color: var(--text-light);
+  font-size: 12px;
+}
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.googleBtn {
+  width: 100%;
+  height: 48px;
+  border-radius: var(--r);
+  border: 1.5px solid var(--border);
+  background: var(--white);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  transition: background var(--transition), border-color var(--transition);
+}
+.googleBtn:hover { background: var(--ivory-dark); border-color: var(--text-light); }
+.googleBtn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.googleIcon { width: 20px; height: 20px; }
+
+.submitBtn:disabled { opacity: 0.6; cursor: not-allowed; }
+
 /* On tablet/desktop — centered modal, not bottom sheet */
 @media (min-width: 600px) {
   .overlay { align-items: center; padding: 20px; }
