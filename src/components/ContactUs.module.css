@@ -104,5 +104,12 @@
 .cardEmail .cardAction { color: #2563EB; }
 
 @media (max-width: 540px) {
-  .cards { grid-template-columns: 1fr; }
+  .cards { 
+    grid-template-columns: 1fr; 
+    justify-items: center;
+  }
+  .card {
+    width: 100%;
+    max-width: 340px;
+  }
 }
