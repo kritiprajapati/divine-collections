@@ -111,5 +111,6 @@
   .card {
     width: 100%;
     max-width: 340px;
+    justify-items: center;
   }
 }
