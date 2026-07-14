@@ -1,11 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styles from './Header.module.css';
 
 export default function Header({ user, searchQuery, onSearch, onLogin, onRegister, onLogout, onSetPassword }) {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   function scrollTo(id) {
-    setMenuOpen(false);
+    setDropdownOpen(false);
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   }
@@ -13,8 +24,6 @@ export default function Header({ user, searchQuery, onSearch, onLogin, onRegiste
   return (
     <header className={styles.header}>
       <div className={styles.inner}>
-
-        {/* Row 1: Logo + Desktop Search + Auth */}
         <div className={styles.row1}>
           <a href="/" className={styles.logo}>
             <div className={styles.logoIcon}>D</div>
@@ -24,7 +33,6 @@ export default function Header({ user, searchQuery, onSearch, onLogin, onRegiste
             </div>
           </a>
 
-          {/* Desktop search (hidden on mobile via CSS) */}
           <div className={styles.searchDesktop}>
             <span className={styles.searchIcon}>🔍</span>
             <input
@@ -37,7 +45,6 @@ export default function Header({ user, searchQuery, onSearch, onLogin, onRegiste
             />
           </div>
 
-          {/* Desktop nav links */}
           <nav className={styles.navLinks}>
             <button className={styles.navLink} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Home</button>
             <button className={styles.navLink} onClick={() => scrollTo('about')}>About</button>
@@ -46,14 +53,37 @@ export default function Header({ user, searchQuery, onSearch, onLogin, onRegiste
 
           <div className={styles.actions}>
             {user ? (
-              <>
-                <div className={styles.userPill}>
+              <div className={styles.accountWrap} ref={dropdownRef}>
+                <button
+                  className={styles.userPillBtn}
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                >
                   <div className={styles.avatar}>{user.name[0].toUpperCase()}</div>
                   <span className={styles.userName}>{user.name}</span>
-                </div>
-                <button className={styles.btnOutline} onClick={onSetPassword}>Set Password</button>
-                <button className={styles.btnOutline} onClick={onLogout}>Sign out</button>
-              </>
+                  <span className={styles.chevron}>{dropdownOpen ? '▲' : '▼'}</span>
+                </button>
+
+                {dropdownOpen && (
+                  <div className={styles.dropdown}>
+                    <div className={styles.dropdownHeader}>
+                      <div className={styles.dropdownName}>{user.name}</div>
+                      <div className={styles.dropdownEmail}>{user.email}</div>
+                    </div>
+                    <button
+                      className={styles.dropdownItem}
+                      onClick={() => { setDropdownOpen(false); onSetPassword(); }}
+                    >
+                      🔐 Account Settings
+                    </button>
+                    <button
+                      className={`${styles.dropdownItem} ${styles.dropdownItemDanger}`}
+                      onClick={() => { setDropdownOpen(false); onLogout(); }}
+                    >
+                      🚪 Sign out
+                    </button>
+                  </div>
+                )}
+              </div>
             ) : (
               <>
                 <button className={styles.btnOutline} onClick={onLogin}>Sign in</button>
@@ -63,7 +93,6 @@ export default function Header({ user, searchQuery, onSearch, onLogin, onRegiste
           </div>
         </div>
 
-        {/* Row 2: Mobile search only (shown on mobile via CSS) */}
         <div className={styles.row2}>
           <div className={styles.searchMobileWrap}>
             <span className={styles.searchIcon}>🔍</span>
@@ -76,7 +105,6 @@ export default function Header({ user, searchQuery, onSearch, onLogin, onRegiste
               className={styles.searchInput}
             />
           </div>
-          {/* Mobile nav */}
           <div className={styles.mobileNav}>
             <button className={styles.navLink} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Home</button>
             <button className={styles.navLink} onClick={() => scrollTo('about')}>About</button>

@@ -1,4 +1,8 @@
 /* App.module.css */
+:global(body) {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
 
 .main {
   max-width: 1200px;
