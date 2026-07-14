@@ -13,7 +13,9 @@ export default function ProductCard({ product, onBuy, onViewDetail}) {
   return (
     <article className={styles.card}>
       <div className={styles.imageWrap} onClick={() => onViewDetail(product)}>
-        <span className={styles.emoji} role="img" aria-label={name}>{emoji}</span>
+        
+        {product.imageUrl ? (
+          <img src={product.imageUrl} alt={name} className={styles.productImage} />) : (<span className={styles.emoji} role="img" aria-label={name}>{emoji}</span>)}
 
         {/* Stock Badge - top left */}
         <span className={`${styles.stockBadge} ${inStock ? styles.badgeIn : styles.badgeOut}`}>

@@ -201,6 +201,19 @@
 .btnWADisabled:hover { background: var(--border); }
 .waIcon { width: 18px; height: 18px; }
 
+.productImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--r-xl) 0 0 var(--r-xl);
+}
+
+@media (max-width: 640px) {
+  .productImage {
+    border-radius: var(--r-xl) var(--r-xl) 0 0;
+  }
+}
+
 /* Responsive */
 @media (max-width: 640px) {
   .inner { grid-template-columns: 1fr; }

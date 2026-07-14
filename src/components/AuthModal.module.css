@@ -228,6 +228,29 @@
 
 .submitBtn:disabled { opacity: 0.6; cursor: not-allowed; }
 
+.forgotWrap {
+  text-align: right;
+  margin-bottom: 14px;
+}
+
+.forgotBtn {
+  background: none;
+  border: none;
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: var(--font-body);
+  padding: 0;
+}
+.forgotBtn:hover { text-decoration: underline; }
+
+.resetSent {
+  font-size: 12px;
+  color: var(--green);
+  font-weight: 500;
+}
+
 /* On tablet/desktop — centered modal, not bottom sheet */
 @media (min-width: 600px) {
   .overlay { align-items: center; padding: 20px; }

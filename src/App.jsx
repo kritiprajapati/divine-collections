@@ -11,11 +11,15 @@ import AboutUs       from './components/AboutUs';
 import ContactUs     from './components/ContactUs';
 import WAFloat       from './components/WAFloat';
 import AdminPanel from './pages/AdminPanel';
+import { saveUserProfile, logEnquiry } from './firebase/users';
 
 import { PRODUCTS as SEED_PRODUCTS, CATEGORIES } from './data/products';
 import { FUSE_OPTIONS, buildWAUrl } from './utils/constants';
 import { subscribeToProducts } from './firebase/products';
 import { onAuthChange, logoutUser } from './firebase/auth';
+
+import SetPasswordModal from './components/SetPasswordModal';
+import { hasPasswordProvider } from './firebase/auth';
 
 import styles from './App.module.css';
 
@@ -39,16 +43,19 @@ export default function App() {
   const [activeCategory, setCategory] = useState('All');
   const [sortBy, setSortBy]           = useState('default');
   const [stockOnly, setStockOnly]     = useState(false);
+  const [showSetPassword, setShowSetPassword] = useState(false);
 
   // Listen to Firebase auth state
   useEffect(() => {
     const unsub = onAuthChange(firebaseUser => {
       if (firebaseUser) {
-        setUser({
+        const userData = {
           name: firebaseUser.displayName || firebaseUser.email.split('@')[0],
           email: firebaseUser.email,
           uid: firebaseUser.uid,
-        });
+        };
+        setUser(userData);
+        saveUserProfile(userData); // Ensure profile is saved even on session restore
       } else {
         setUser(null);
       }
@@ -94,13 +101,16 @@ export default function App() {
       return;
     }
     window.open(buildWAUrl(product.name, product.price), '_blank', 'noopener,noreferrer');
+    logEnquiry(user.uid, product); // Log this enquiry
   }
 
   function handleAuth(userData) {
-    setUser(userData);
+    setUser(userData);  
     setShowModal(false);
+    saveUserProfile(userData); // Save/update user profile in Firestore
     if (pendingProduct) {
       window.open(buildWAUrl(pendingProduct.name, pendingProduct.price), '_blank', 'noopener,noreferrer');
+      logEnquiry(userData.uid, pendingProduct); // Log this enquiry
       setPending(null);
     }
   }
@@ -128,6 +138,7 @@ export default function App() {
 
   return (
     <>
+
       <Header
         user={user}
         searchQuery={searchQuery}
@@ -135,6 +146,7 @@ export default function App() {
         onLogin={() => { setModalMode('login'); setShowModal(true); setPending(null); }}
         onRegister={() => { setModalMode('register'); setShowModal(true); setPending(null); }}
         onLogout={handleLogout}
+        onSetPassword={() => setShowSetPassword(true)}
       />
 
       <Hero
@@ -210,6 +222,10 @@ export default function App() {
           onAuth={handleAuth}
           onClose={() => { setShowModal(false); setPending(null); }}
         />
+      )}
+
+      {showSetPassword && (
+        <SetPasswordModal onClose={() => setShowSetPassword(false)} />
       )}
 
       <WAFloat />

@@ -23,7 +23,7 @@ export default function ProductDetail({ product, onClose, onBuy }) {
         <div className={styles.inner}>
           {/* Left: image */}
           <div className={styles.imageWrap}>
-            <span className={styles.emoji}>{emoji}</span>
+            {product.imageUrl ? (<img src={product.imageUrl} alt={name} className={styles.productImage} />) : (<span className={styles.emoji}>{emoji}</span>)}
             {badge && (
               <span className={`${styles.badge} ${badge === 'New' ? styles.badgeNew : styles.badgeFeatured}`}>
                 {badge}

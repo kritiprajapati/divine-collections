@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styles from './Header.module.css';
 
-export default function Header({ user, searchQuery, onSearch, onLogin, onRegister, onLogout }) {
+export default function Header({ user, searchQuery, onSearch, onLogin, onRegister, onLogout, onSetPassword }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   function scrollTo(id) {
@@ -19,7 +19,7 @@ export default function Header({ user, searchQuery, onSearch, onLogin, onRegiste
           <a href="/" className={styles.logo}>
             <div className={styles.logoIcon}>D</div>
             <div>
-              <div className={styles.logoName}>Divine Collection</div>
+              <div className={styles.logoName}>Divine Collections</div>
               <div className={styles.logoSub}>General Store</div>
             </div>
           </a>
@@ -51,6 +51,7 @@ export default function Header({ user, searchQuery, onSearch, onLogin, onRegiste
                   <div className={styles.avatar}>{user.name[0].toUpperCase()}</div>
                   <span className={styles.userName}>{user.name}</span>
                 </div>
+                <button className={styles.btnOutline} onClick={onSetPassword}>Set Password</button>
                 <button className={styles.btnOutline} onClick={onLogout}>Sign out</button>
               </>
             ) : (

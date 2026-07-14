@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { registerUser, loginUser, loginWithGoogle } from '../firebase/auth';
 import styles from './AuthModal.module.css';
+import { registerUser, loginUser, loginWithGoogle, resetPassword } from '../firebase/auth';
 
 export default function AuthModal({ mode: initialMode, pendingProduct, onAuth, onClose }) {
   const [mode, setMode]     = useState(initialMode || 'login');
@@ -9,6 +9,7 @@ export default function AuthModal({ mode: initialMode, pendingProduct, onAuth, o
   const [password, setPass] = useState('');
   const [error, setError]   = useState('');
   const [loading, setLoading] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -44,6 +45,23 @@ export default function AuthModal({ mode: initialMode, pendingProduct, onAuth, o
     }
   }
 
+  async function handleForgotPassword() {
+    if (!email) {
+      setError('Please enter your email address first.');
+      return;
+    }
+    setError('');
+    setLoading(true);
+    try {
+      await resetPassword(email);
+      setResetSent(true);
+    } catch (err) {
+      setError(getErrorMessage(err.code));
+    } finally {
+      setLoading(false);
+    }
+  }
+
   function getErrorMessage(code) {
     switch (code) {
       case 'auth/email-already-in-use': return 'This email is already registered. Please sign in.';
@@ -53,6 +71,7 @@ export default function AuthModal({ mode: initialMode, pendingProduct, onAuth, o
       case 'auth/wrong-password':       return 'Incorrect password. Please try again.';
       case 'auth/invalid-credential':   return 'Invalid email or password. Please try again.';
       case 'auth/popup-closed-by-user': return 'Google sign-in was cancelled.';
+      case 'auth/missing-email':        return 'Please enter your email address.';
       default:                          return 'Something went wrong. Please try again.';
     }
   }
@@ -116,9 +135,21 @@ export default function AuthModal({ mode: initialMode, pendingProduct, onAuth, o
             onChange={e => setPass(e.target.value)}
             autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
           />
-          <button type="submit" className={styles.submitBtn} disabled={loading}>
-            {loading ? 'Please wait…' : mode === 'login' ? 'Sign in' : 'Create account'}
-          </button>
+
+          {mode === 'login' && (
+            <div className={styles.forgotWrap}>
+              {resetSent ? (
+                <span className={styles.resetSent}>✓ Reset email sent! Check your inbox.</span>
+              ) : (
+                <button type="button" className={styles.forgotBtn} onClick={handleForgotPassword}>
+                  Forgot password?
+                </button>
+              )}
+            </div>)}
+
+            <button type="submit" className={styles.submitBtn} disabled={loading}>
+              {loading ? 'Please wait…' : mode === 'login' ? 'Sign in' : 'Create account'}
+            </button>
         </form>
 
         <div className={styles.divider}><span>or</span></div>

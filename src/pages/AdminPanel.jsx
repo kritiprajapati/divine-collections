@@ -3,12 +3,13 @@ import { onAuthChange, loginWithGoogle, logoutUser } from '../firebase/auth';
 import { subscribeToProducts, addProduct, updateProduct, deleteProduct, seedProducts } from '../firebase/products';
 import { PRODUCTS as SEED_PRODUCTS, CATEGORIES } from '../data/products';
 import styles from './AdminPanel.module.css';
+import { uploadImageToCloudinary } from '../utils/cloudinary';
 
 const ADMIN_EMAIL = 'divinecollectionsstore@gmail.com';
 
 const EMPTY_FORM = {
   name: '', brand: '', category: 'Hygiene', price: '',
-  inStock: true, emoji: '🧼', badge: '', description: '', tags: '',
+  inStock: true, emoji: '🧼', badge: '', description: '', tags: '', imageUrl: '',
 };
 
 export default function AdminPanel() {
@@ -22,6 +23,8 @@ export default function AdminPanel() {
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [seeding, setSeeding]     = useState(false);
   const [showForm, setShowForm]   = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [imagePreview, setImagePreview] = useState('');
 
   useEffect(() => {
     const unsub = onAuthChange(u => {
@@ -49,6 +52,10 @@ export default function AdminPanel() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    if (uploadingImage) {
+        showMsg('⏳ Please wait for the image to finish uploading.');
+        return;
+    }
     setLoading(true);
     try {
       const data = {
@@ -74,22 +81,44 @@ export default function AdminPanel() {
     }
   }
 
+  async function handleImageUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Show local preview immediately
+    const localPreview = URL.createObjectURL(file);
+    setImagePreview(localPreview);
+
+    setUploadingImage(true);
+    try {
+        const url = await uploadImageToCloudinary(file);
+        setForm(prev => ({ ...prev, imageUrl: url }));
+        showMsg('✅ Image uploaded!');
+    } catch (err) {
+        showMsg('❌ ' + err.message);
+        setImagePreview('');
+    } finally {
+        setUploadingImage(false);
+    }}
+
   function handleEdit(product) {
     setForm({
-      name: product.name,
-      brand: product.brand,
-      category: product.category,
-      price: product.price,
-      inStock: product.inStock,
-      emoji: product.emoji,
-      badge: product.badge || '',
-      description: product.description,
-      tags: Array.isArray(product.tags) ? product.tags.join(', ') : '',
+        name: product.name,
+        brand: product.brand,
+        category: product.category,
+        price: product.price,
+        inStock: product.inStock,
+        emoji: product.emoji,
+        badge: product.badge || '',
+        description: product.description,
+        tags: Array.isArray(product.tags) ? product.tags.join(', ') : '',
+        imageUrl: product.imageUrl || '',
     });
+    setImagePreview(product.imageUrl || '');
     setEditingId(product.id);
     setShowForm(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
+    }
 
   async function handleDelete(id) {
     try {
@@ -213,7 +242,7 @@ export default function AdminPanel() {
         <div className={styles.actions}>
           <button
             className={styles.btnPrimary}
-            onClick={() => { setForm(EMPTY_FORM); setEditingId(null); setShowForm(!showForm); }}
+            onClick={() => { setForm(EMPTY_FORM); setEditingId(null); setShowForm(!showForm); setImagePreview(''); }}
           >
             {showForm ? '✕ Cancel' : '+ Add New Product'}
           </button>
@@ -254,6 +283,25 @@ export default function AdminPanel() {
                   <label>Emoji</label>
                   <input value={form.emoji} onChange={e => setForm({...form, emoji: e.target.value})} placeholder="e.g. 🧼" />
                 </div>
+                <div className={`${styles.formGroup} ${styles.fullWidth}`}>
+                    <label>Product Image</label>
+                    <div className={styles.imageUploadWrap}>
+                        {imagePreview && (
+                        <img src={imagePreview} alt="Preview" className={styles.imagePreview} />
+                        )}
+                        <label className={styles.uploadBtn}>
+                        {uploadingImage ? 'Uploading…' : imagePreview ? 'Change Image' : 'Upload Image'}
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            style={{ display: 'none' }}
+                            disabled={uploadingImage}
+                        />
+                        </label>
+                        <p className={styles.uploadHint}>If no image is uploaded, the emoji will be used instead.</p>
+                    </div>
+                </div>
                 <div className={styles.formGroup}>
                   <label>Badge</label>
                   <select value={form.badge} onChange={e => setForm({...form, badge: e.target.value})}>
@@ -285,7 +333,9 @@ export default function AdminPanel() {
                 <button type="submit" className={styles.btnPrimary} disabled={loading}>
                   {loading ? 'Saving…' : editingId ? 'Update Product' : 'Add Product'}
                 </button>
-                <button type="button" className={styles.btnOutline} onClick={() => { setShowForm(false); setForm(EMPTY_FORM); setEditingId(null); }}>
+                <button type="button" className={styles.btnOutline} 
+                onClick={() => { setShowForm(false); setForm(EMPTY_FORM); setEditingId(null); setImagePreview(''); }}
+                >
                   Cancel
                 </button>
               </div>
@@ -313,12 +363,16 @@ export default function AdminPanel() {
               {products.map(product => (
                 <div key={product.id} className={styles.tableRow}>
                   <div className={styles.productInfo}>
-                    <span className={styles.productEmoji}>{product.emoji}</span>
+                    {product.imageUrl ? (
+                        <img src={product.imageUrl} alt={product.name} className={styles.productThumb} />
+                    ) : (
+                        <span className={styles.productEmoji}>{product.emoji}</span>
+                    )}
                     <div>
-                      <div className={styles.productName}>{product.name}</div>
-                      <div className={styles.productBrand}>{product.brand}</div>
+                        <div className={styles.productName}>{product.name}</div>
+                        <div className={styles.productBrand}>{product.brand}</div>
                     </div>
-                  </div>
+                </div>
                   <span className={styles.productCategory}>{product.category}</span>
                   <span className={styles.productPrice}>₹{product.price}</span>
                   <button

@@ -183,6 +183,17 @@
   flex-shrink: 0;
 }
 
+.productImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.imageWrap:hover .productImage {
+  transform: scale(1.1);
+}
+
 /* Responsive */
 @media (max-width: 480px) {
   .body    { padding: 12px; }

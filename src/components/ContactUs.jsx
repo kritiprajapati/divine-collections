@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './ContactUs.module.css';
 
 const WA_NUMBER = '919997961188';
-const EMAIL = 'divinecollections@gmail.com';
+const EMAIL = 'divinecollectionsstore@gmail.com';
 
 export default function ContactUs() {
   const waUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent('Hi! I have a query about your products.')}`;
