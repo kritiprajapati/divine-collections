@@ -106,3 +106,11 @@ body {
 /* Utility: hide scrollbar but allow scroll */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { scrollbar-width: none; }
+
+@media (max-width: 768px) {
+  #products,
+  #about,
+  #contact {
+    scroll-margin-top: 80px;
+  }
+}
