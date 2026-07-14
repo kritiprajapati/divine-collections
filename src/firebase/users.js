@@ -1,6 +1,7 @@
 import {
   doc,
   setDoc,
+  getDoc,
   updateDoc,
   serverTimestamp,
   arrayUnion,
@@ -36,4 +37,24 @@ export async function logEnquiry(uid, product) {
     }),
     lastActive: serverTimestamp(),
   });
+}
+
+export async function updateUserName(uid, newName) {
+  const userRef = doc(db, 'users', uid);
+  await updateDoc(userRef, { name: newName });
+
+  // Also update Firebase Auth display name
+  const { auth } = await import('./config');
+  const { updateProfile } = await import('firebase/auth');
+  if (auth.currentUser) {
+    await updateProfile(auth.currentUser, { displayName: newName });
+  }
+}
+
+export async function getUserEnquiries(uid) {
+  const userRef = doc(db, 'users', uid);
+  const snap = await getDoc(userRef);
+  if (!snap.exists()) return [];
+  const data = snap.data();
+  return (data.enquiries || []).slice().reverse(); // most recent first
 }

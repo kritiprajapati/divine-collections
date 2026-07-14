@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styles from './Header.module.css';
 
-export default function Header({ user, searchQuery, onSearch, onLogin, onRegister, onLogout, onSetPassword }) {
+export default function Header({ user, searchQuery, onSearch, onLogin, onRegister, onLogout, onAccountSettings }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -71,9 +71,9 @@ export default function Header({ user, searchQuery, onSearch, onLogin, onRegiste
                     </div>
                     <button
                       className={styles.dropdownItem}
-                      onClick={() => { setDropdownOpen(false); onSetPassword(); }}
+                      onClick={() => { setDropdownOpen(false); onAccountSettings(); }}
                     >
-                      🔐 Account Settings
+                      ⚙️ Account Settings
                     </button>
                     <button
                       className={`${styles.dropdownItem} ${styles.dropdownItemDanger}`}

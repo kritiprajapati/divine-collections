@@ -18,7 +18,7 @@ import { FUSE_OPTIONS, buildWAUrl } from './utils/constants';
 import { subscribeToProducts } from './firebase/products';
 import { onAuthChange, logoutUser } from './firebase/auth';
 
-import SetPasswordModal from './components/SetPasswordModal';
+import AccountSettings from './components/AccountSettings';
 import { hasPasswordProvider } from './firebase/auth';
 
 import styles from './App.module.css';
@@ -43,7 +43,7 @@ export default function App() {
   const [activeCategory, setCategory] = useState('All');
   const [sortBy, setSortBy]           = useState('default');
   const [stockOnly, setStockOnly]     = useState(false);
-  const [showSetPassword, setShowSetPassword] = useState(false);
+  const [showAccountSettings, setShowAccountSettings] = useState(false);
 
   // Listen to Firebase auth state
   useEffect(() => {
@@ -146,7 +146,7 @@ export default function App() {
         onLogin={() => { setModalMode('login'); setShowModal(true); setPending(null); }}
         onRegister={() => { setModalMode('register'); setShowModal(true); setPending(null); }}
         onLogout={handleLogout}
-        onSetPassword={() => setShowSetPassword(true)}
+        onAccountSettings={() => setShowAccountSettings(true)}
       />
 
       <Hero
@@ -224,8 +224,12 @@ export default function App() {
         />
       )}
 
-      {showSetPassword && (
-        <SetPasswordModal onClose={() => setShowSetPassword(false)} />
+      {showAccountSettings && (
+        <AccountSettings
+          user={user}
+          onClose={() => setShowAccountSettings(false)}
+          onNameUpdate={newName => setUser(prev => ({ ...prev, name: newName }))}
+        />
       )}
 
       <WAFloat />

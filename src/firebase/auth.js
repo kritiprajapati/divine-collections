@@ -9,7 +9,7 @@ import {
 } from 'firebase/auth';
 import { auth } from './config';
 import { sendPasswordResetEmail } from 'firebase/auth';
-import { EmailAuthProvider, linkWithCredential,} from 'firebase/auth';
+import { EmailAuthProvider, linkWithCredential, reauthenticateWithCredential, updatePassword,} from 'firebase/auth';
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -42,6 +42,14 @@ export async function setPasswordForAccount(password) {
   if (!user) throw new Error('You must be signed in.');
   const credential = EmailAuthProvider.credential(user.email, password);
   await linkWithCredential(user, credential);
+}
+
+export async function changePassword(currentPassword, newPassword) {
+  const user = auth.currentUser;
+  if (!user) throw new Error('You must be signed in.');
+  const credential = EmailAuthProvider.credential(user.email, currentPassword);
+  await reauthenticateWithCredential(user, credential);
+  await updatePassword(user, newPassword);
 }
 
 export function hasPasswordProvider() {
