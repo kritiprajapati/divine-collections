@@ -9,6 +9,7 @@
   max-width: 700px;
   margin: 0 auto;
   text-align: center;
+  background: red;
 }
 
 .eyebrow {
@@ -39,6 +40,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
+  background: yellow;
 }
 
 .card {
@@ -103,7 +105,7 @@
 .cardWA   .cardAction { color: #16A34A; }
 .cardEmail .cardAction { color: #2563EB; }
 
-@media (max-width: 480px) {
+/* @media (max-width: 480px) {
   .cards { 
     grid-template-columns: 1fr; 
     justify-items: center;
@@ -112,5 +114,19 @@
     width: 100%;
     max-width: 340px;
     justify-items: center;
+  }
+} */
+
+@media (max-width: 480px) {
+  .cards {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    width: 100%;
+  }
+
+  .card {
+    width: min(340px, 100%);
+    margin: 0 auto;
+    justify-content: flex-start;
   }
 }
