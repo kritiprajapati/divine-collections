@@ -63,8 +63,8 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: var(--green);
-  color: var(--gold);
+  background: var(--navy);
+  color: var(--mustard);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -110,8 +110,8 @@
 }
 .tab:hover { color: var(--text); }
 .tabActive {
-  color: var(--green);
-  border-bottom-color: var(--green);
+  color: var(--navy);
+  border-bottom-color: var(--navy);
   font-weight: 600;
 }
 
@@ -148,7 +148,7 @@
   transition: border-color var(--transition);
   margin-bottom: 6px;
 }
-.input:focus { border-color: var(--green); }
+.input:focus { border-color: var(--navy); }
 
 .hint {
   font-size: 13px;
@@ -161,7 +161,7 @@
   height: 46px;
   border-radius: var(--r);
   border: none;
-  background: var(--green);
+  background: var(--navy);
   color: #fff;
   font-family: var(--font-body);
   font-size: 14px;
@@ -170,7 +170,7 @@
   margin-top: 10px;
   transition: background var(--transition);
 }
-.saveBtn:hover { background: var(--green-light); }
+.saveBtn:hover { background: var(--navy-light); }
 .saveBtn:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .error {
@@ -183,8 +183,8 @@
 }
 
 .success {
-  background: var(--green-pale);
-  color: var(--green);
+  background: var(--navy-pale);
+  color: var(--navy);
   font-size: 13px;
   padding: 9px 13px;
   border-radius: var(--r-sm);
@@ -195,7 +195,7 @@
 .infoBox {
   display: flex;
   gap: 12px;
-  background: var(--sage-light);
+  background: var(--periwinkle-light);
   border-radius: var(--r);
   padding: 16px;
   margin-top: 20px;
@@ -267,7 +267,7 @@
   font-family: var(--font-display);
   font-size: 16px;
   font-weight: 600;
-  color: var(--green);
+  color: var(--navy);
 }
 
 /* Desktop: centered modal */

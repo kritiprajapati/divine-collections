@@ -1,7 +1,7 @@
 /* Header.module.css */
 
 .header {
-  background: var(--green);
+  background: var(--navy);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -35,18 +35,14 @@
 }
 
 .logoIcon {
-  width: 36px;
-  height: 36px;
-  background: var(--gold);
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  object-position: center;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-display);
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--green);
   flex-shrink: 0;
+  background: var(--mustard);
+  border: 2px solid var(--mustard-light);
 }
 
 .logoName {
@@ -104,7 +100,7 @@
 .searchInput::placeholder { color: rgba(255, 255, 255, 0.5); }
 .searchInput::-webkit-search-cancel-button { filter: invert(1) opacity(0.6); }
 .searchInput:focus {
-  border-color: var(--gold);
+  border-color: var(--mustard);
   background: rgba(255, 255, 255, 0.18);
 }
 
@@ -159,13 +155,13 @@
 }
 .btnOutline:hover { background: rgba(255, 255, 255, 0.12); }
 
-.btnGold {
+.btnmustard {
   height: 36px;
   padding: 0 16px;
   border-radius: var(--r);
   border: none;
-  background: var(--gold);
-  color: var(--green);
+  background: var(--mustard);
+  color: var(--navy);
   font-family: var(--font-body);
   font-size: 13px;
   font-weight: 600;
@@ -173,7 +169,7 @@
   white-space: nowrap;
   transition: background var(--transition);
 }
-.btnGold:hover { background: #d4a832; }
+.btnmustard:hover { background: #d4a832; }
 
 /* Account dropdown */
 .accountWrap {
@@ -197,13 +193,13 @@
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: var(--gold);
+  background: var(--mustard);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 13px;
   font-weight: 600;
-  color: var(--green);
+  color: var(--navy);
   flex-shrink: 0;
 }
 
@@ -310,7 +306,7 @@
   .logoName { font-size: 14px; }
   .logoSub  { display: none; }
   .btnOutline { padding: 0 10px; font-size: 12px; }
-  .btnGold    { padding: 0 10px; font-size: 12px; }
+  .btnmustard    { padding: 0 10px; font-size: 12px; }
   .userName   { display: none; }
   .userPillBtn { padding: 5px 8px; }
   .dropdown   { min-width: 200px; }

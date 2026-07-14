@@ -42,13 +42,15 @@ export default function AboutUs() {
             </div>
           </div>
         </div>
+
         <div className={styles.visual}>
-          <div className={styles.emojiGrid}>
-            {['🧼','🧴','✨','🥥','🦷','🫧','💆','☀️','🌿','💧','🧼','🧴'].map((e, i) => (
-              <div key={i} className={styles.emojiCell}>{e}</div>
-            ))}
-          </div>
+          <img
+            src="https://res.cloudinary.com/su6mdywy/image/upload/v1784025642/Divine_logo_vcs2ds.png"
+            alt="Divine Collections"
+            className={styles.logoImage}
+          />
         </div>
+
       </div>
     </section>
   );

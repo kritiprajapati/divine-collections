@@ -16,7 +16,7 @@
   font-weight: 600;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: var(--sage);
+  color: var(--periwinkle);
   margin-bottom: 10px;
 }
 
@@ -24,7 +24,7 @@
   font-family: var(--font-display);
   font-size: clamp(26px, 4vw, 36px);
   font-weight: 700;
-  color: var(--green);
+  color: var(--navy);
   margin-bottom: 12px;
 }
 

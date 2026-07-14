@@ -101,7 +101,7 @@
   font-weight: 600;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: var(--sage);
+  color: var(--periwinkle);
 }
 
 .name {
@@ -126,7 +126,7 @@
   font-weight: 600;
   width: fit-content;
 }
-.inStock  { background: var(--green-pale); color: var(--green); }
+.inStock  { background: var(--navy-pale); color: var(--navy); }
 .outStock { background: #FDECEA; color: #B03A2E; }
 
 .desc {
@@ -145,7 +145,7 @@
 .tag {
   padding: 4px 10px;
   border-radius: 100px;
-  background: var(--sage-light);
+  background: var(--periwinkle-light);
   color: var(--text-muted);
   font-size: 11px;
   font-weight: 500;
@@ -166,7 +166,7 @@
   font-family: var(--font-display);
   font-size: 28px;
   font-weight: 700;
-  color: var(--green);
+  color: var(--navy);
 }
 .unit {
   font-family: var(--font-body);
@@ -183,7 +183,7 @@
   padding: 0 20px;
   border-radius: var(--r);
   border: none;
-  background: var(--green);
+  background: var(--navy);
   color: #fff;
   font-family: var(--font-body);
   font-size: 14px;
@@ -192,7 +192,7 @@
   transition: background var(--transition);
   white-space: nowrap;
 }
-.btnWA:hover { background: var(--green-light); }
+.btnWA:hover { background: var(--navy-light); }
 .btnWADisabled {
   background: var(--border);
   color: var(--text-light);

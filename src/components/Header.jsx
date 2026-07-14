@@ -25,8 +25,9 @@ export default function Header({ user, searchQuery, onSearch, onLogin, onRegiste
     <header className={styles.header}>
       <div className={styles.inner}>
         <div className={styles.row1}>
+
           <a href="/" className={styles.logo}>
-            <div className={styles.logoIcon}>D</div>
+          <img src="https://res.cloudinary.com/su6mdywy/image/upload/v1784025641/Bag_logo_tpvgg8.png" alt="Divine Collections" className={styles.logoIcon} />
             <div>
               <div className={styles.logoName}>Divine Collections</div>
               <div className={styles.logoSub}>General Store</div>
@@ -87,7 +88,7 @@ export default function Header({ user, searchQuery, onSearch, onLogin, onRegiste
             ) : (
               <>
                 <button className={styles.btnOutline} onClick={onLogin}>Sign in</button>
-                <button className={styles.btnGold} onClick={onRegister}>Register</button>
+                <button className={styles.btnmustard} onClick={onRegister}>Register</button>
               </>
             )}
           </div>

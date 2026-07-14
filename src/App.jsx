@@ -125,8 +125,8 @@ export default function App() {
 
   if (authLoading) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--green)' }}>
-        <div style={{ color: 'var(--gold)', fontFamily: 'var(--font-display)', fontSize: '24px' }}>Divine Collections</div>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--navy)' }}>
+        <div style={{ color: 'var(--mustard)', fontFamily: 'var(--font-display)', fontSize: '24px' }}>Divine Collections</div>
       </div>
     );
   }

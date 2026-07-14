@@ -25,7 +25,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--green);
+  background: var(--navy);
 }
 
 .loginBox {
@@ -41,7 +41,7 @@
 .loginLogo {
   width: 60px;
   height: 60px;
-  background: var(--green);
+  background: var(--navy);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -49,7 +49,7 @@
   font-family: var(--font-display);
   font-size: 26px;
   font-weight: 700;
-  color: var(--gold);
+  color: var(--mustard);
   margin: 0 auto 16px;
 }
 
@@ -68,7 +68,7 @@
 
 /* Header */
 .header {
-  background: var(--green);
+  background: var(--navy);
   padding: 0 24px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.15);
 }
@@ -91,7 +91,7 @@
 .headerLogo {
   width: 36px;
   height: 36px;
-  background: var(--gold);
+  background: var(--mustard);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -99,7 +99,7 @@
   font-family: var(--font-display);
   font-size: 16px;
   font-weight: 700;
-  color: var(--green);
+  color: var(--navy);
 }
 
 .headerTitle {
@@ -136,7 +136,7 @@
 
 /* Message */
 .message {
-  background: var(--green);
+  background: var(--navy);
   color: #fff;
   padding: 12px 20px;
   border-radius: var(--r);
@@ -166,7 +166,7 @@
   font-family: var(--font-display);
   font-size: 32px;
   font-weight: 700;
-  color: var(--green);
+  color: var(--navy);
 }
 
 .statLabel {
@@ -250,7 +250,7 @@
 .formGroup input:focus,
 .formGroup select:focus,
 .formGroup textarea:focus {
-  border-color: var(--green);
+  border-color: var(--navy);
 }
 
 .formActions {
@@ -299,7 +299,7 @@
   box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 
-.toggle input:checked + .toggleSlider { background: var(--green); }
+.toggle input:checked + .toggleSlider { background: var(--navy); }
 .toggle input:checked + .toggleSlider::before { left: 23px; }
 
 /* Product list */
@@ -382,7 +382,7 @@
 .productPrice {
   font-size: 15px;
   font-weight: 600;
-  color: var(--green);
+  color: var(--navy);
   font-family: var(--font-display);
 }
 
@@ -397,7 +397,7 @@
   width: fit-content;
 }
 
-.stockIn  { background: var(--green-pale); color: var(--green); }
+.stockIn  { background: var(--navy-pale); color: var(--navy); }
 .stockIn:hover  { background: #b7e4c7; }
 .stockOut { background: #FDECEA; color: #B03A2E; }
 .stockOut:hover { background: #fcc9c5; }
@@ -413,7 +413,7 @@
   padding: 0 20px;
   border-radius: var(--r);
   border: none;
-  background: var(--green);
+  background: var(--navy);
   color: #fff;
   font-family: var(--font-body);
   font-size: 14px;
@@ -421,7 +421,7 @@
   cursor: pointer;
   transition: background var(--transition);
 }
-.btnPrimary:hover { background: var(--green-light); }
+.btnPrimary:hover { background: var(--navy-light); }
 .btnPrimary:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .btnOutline {
@@ -440,22 +440,22 @@
   display: inline-flex;
   align-items: center;
 }
-.btnOutline:hover { border-color: var(--green); color: var(--green); }
+.btnOutline:hover { border-color: var(--navy); color: var(--navy); }
 
 .btnSeed {
   height: 40px;
   padding: 0 20px;
   border-radius: var(--r);
-  border: 1.5px solid var(--gold);
+  border: 1.5px solid var(--mustard);
   background: transparent;
-  color: var(--green);
+  color: var(--navy);
   font-family: var(--font-body);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: all var(--transition);
 }
-.btnSeed:hover { background: var(--gold); }
+.btnSeed:hover { background: var(--mustard); }
 .btnSeed:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .btnEdit {
@@ -471,7 +471,7 @@
   transition: all var(--transition);
   font-family: var(--font-body);
 }
-.btnEdit:hover { border-color: var(--green); color: var(--green); }
+.btnEdit:hover { border-color: var(--navy); color: var(--navy); }
 
 .btnDelete {
   height: 32px;
@@ -580,7 +580,7 @@
   display: inline-flex;
   align-items: center;
 }
-.uploadBtn:hover { border-color: var(--green); color: var(--green); }
+.uploadBtn:hover { border-color: var(--navy); color: var(--navy); }
 
 .uploadHint {
   font-size: 12px;

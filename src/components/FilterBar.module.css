@@ -45,12 +45,12 @@
   flex-shrink: 0;
 }
 .pill:hover {
-  border-color: var(--green);
-  color: var(--green);
+  border-color: var(--navy);
+  color: var(--navy);
 }
 .pillActive {
-  background: var(--green);
-  border-color: var(--green);
+  background: var(--navy);
+  border-color: var(--navy);
   color: #fff;
 }
 .pillActive:hover {
@@ -79,7 +79,7 @@
   outline: none;
   transition: border-color var(--transition);
 }
-.sortSelect:focus { border-color: var(--green); }
+.sortSelect:focus { border-color: var(--navy); }
 
 .stockToggle {
   display: flex;
@@ -100,7 +100,7 @@
   transition: background var(--transition);
   flex-shrink: 0;
 }
-.switchOn { background: var(--green); }
+.switchOn { background: var(--navy); }
 
 .knob {
   width: 16px;

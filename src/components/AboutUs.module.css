@@ -2,7 +2,11 @@
 
 .section {
   background: var(--ivory-dark);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
   padding: 72px 24px;
+  box-sizing: border-box;
 }
 
 .inner {
@@ -12,6 +16,7 @@
   grid-template-columns: 1fr 1fr;
   gap: 60px;
   align-items: center;
+  width: 100%;
 }
 
 .eyebrow {
@@ -19,7 +24,7 @@
   font-weight: 600;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: var(--sage);
+  color: var(--periwinkle);
   margin-bottom: 10px;
 }
 
@@ -27,7 +32,7 @@
   font-family: var(--font-display);
   font-size: clamp(26px, 4vw, 36px);
   font-weight: 700;
-  color: var(--green);
+  color: var(--navy);
   margin-bottom: 20px;
   line-height: 1.2;
 }
@@ -79,34 +84,53 @@
 }
 
 /* Emoji grid visual */
+
 .visual {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
 }
 
-.emojiGrid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
+.visual::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, var(--mustard-light) 0%, transparent 70%);
+  opacity: 0.5;
+  z-index: 0;
+  border-radius: 50%;
 }
 
-.emojiCell {
-  width: 72px;
-  height: 72px;
-  background: var(--white);
-  border-radius: var(--r-lg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 32px;
-  box-shadow: var(--shadow);
-  transition: transform 0.2s ease;
+.logoImage {
+  width: 100%;
+  max-width: 340px;
+  height: auto;
+  object-fit: contain;
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 20px 40px rgba(27, 42, 74, 0.25)) drop-shadow(0 8px 16px rgba(27, 42, 74, 0.15));
+  transition: transform 0.3s ease;
 }
-.emojiCell:hover { transform: scale(1.1); }
+
+.logoImage:hover {
+  transform: translateY(-6px);
+}
 
 /* Responsive */
 @media (max-width: 768px) {
-  .inner  { grid-template-columns: 1fr; gap: 36px; }
-  .visual { display: none; }
+  .section { min-height: auto; padding: 60px 24px; }
+  .inner   { grid-template-columns: 1fr; gap: 36px; }
+  .visual  { order: -1; }
+  .logoImage { max-width: 220px; }
+}
+
+@media (max-width: 480px) {
+  .section { padding: 48px 16px; }
+  .logoImage { max-width: 180px; }
 }

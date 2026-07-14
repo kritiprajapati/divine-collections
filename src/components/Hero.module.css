@@ -1,7 +1,7 @@
 /* Hero.module.css */
 
 .hero {
-  background: var(--green);
+  background: var(--navy);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -43,7 +43,7 @@
   font-weight: 600;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: var(--gold-light);
+  color: var(--mustard-light);
   margin-bottom: 16px;
 }
 
@@ -57,7 +57,7 @@
 }
 
 .accent {
-  color: var(--gold);
+  color: var(--mustard);
   font-style: normal;
 }
 
@@ -83,7 +83,7 @@
   font-family: var(--font-display);
   font-size: 26px;
   font-weight: 600;
-  color: var(--gold);
+  color: var(--mustard);
 }
 
 .statLabel {
@@ -106,9 +106,9 @@
   height: 48px;
   padding: 0 28px;
   border-radius: 100px;
-  border: 2px solid var(--gold);
+  border: 2px solid var(--mustard);
   background: transparent;
-  color: var(--gold);
+  color: var(--mustard);
   font-family: var(--font-body);
   font-size: 15px;
   font-weight: 600;
@@ -116,8 +116,8 @@
   transition: background var(--transition), color var(--transition);
 }
 .scrollBtn:hover {
-  background: var(--gold);
-  color: var(--green);
+  background: var(--mustard);
+  color: var(--navy);
 }
 
 /* Right: showcase */
@@ -150,7 +150,7 @@
 
 .showcaseActive {
   background: rgba(201, 168, 76, 0.18);
-  border-color: var(--gold);
+  border-color: var(--mustard);
   transform: scale(1.06);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }

@@ -13,15 +13,25 @@
 
 :root {
   /* Palette */
-  --green:        #1B4332;
-  --green-light:  #2D6A4F;
-  --green-pale:   #D8F3DC;
-  --gold:         #C9A84C;
-  --gold-light:   #F0D79A;
+  /* --navy:        #1B4332;
+  --navy-light:  #2D6A4F;
+  --navy-pale:   #D8F3DC;
+  --mustard:         #C9A84C;
+  --mustard-light:   #F0D79A;
   --ivory:        #FDFBF7;
   --ivory-dark:   #F5F1E8;
-  --sage:         #95B8A0;
-  --sage-light:   #E8F4EE;
+  --periwinkle:         #95B8A0;
+  --periwinkle-light:   #E8F4EE; */
+
+  --navy:         #1B2A4A;
+  --navy-light:   #2E4374;
+  --navy-pale:    #DCE3F0;
+  --mustard:      #F0B860;
+  --mustard-light: #F6D28F;
+  --ivory:        #FDFBF7;
+  --ivory-dark:   #F5F1E8;
+  --periwinkle:   #8B9BC4;
+  --periwinkle-light: #E8ECF6;
 
   /* Text */
   --text:         #1A1A1A;
@@ -79,18 +89,18 @@ body {
 /* Scrollbar */
 ::-webkit-scrollbar        { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track  { background: var(--ivory); }
-::-webkit-scrollbar-thumb  { background: var(--sage); border-radius: 3px; }
+::-webkit-scrollbar-thumb  { background: var(--periwinkle); border-radius: 3px; }
 
 /* Focus */
 :focus-visible {
-  outline: 2px solid var(--gold);
+  outline: 2px solid var(--mustard);
   outline-offset: 2px;
 }
 
 /* Selection */
 ::selection {
-  background: var(--gold-light);
-  color: var(--green);
+  background: var(--mustard-light);
+  color: var(--navy);
 }
 
 /* Utility: hide scrollbar but allow scroll */
