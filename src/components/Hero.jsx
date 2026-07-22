@@ -30,49 +30,49 @@ const SHOWCASE_ITEMS = [
   {
     label: "Hygiene",
     category: "Hygiene",
-    image: "https://res.cloudinary.com/su6mdywy/image/upload/v1784417462/banner_ts96yl.png",
+    image: "https://res.cloudinary.com/su6mdywy/image/upload/v1784741046/ChatGPT_Image_Jul_22_2026_10_53_33_PM_ll7hfr.png",
     subtitle: "Premium soaps & hygiene essentials"
   },
   {
     label: "Skincare",
     category: "Skincare",
-    image: "https://res.cloudinary.com/su6mdywy/image/upload/v1784417462/banner_ts96yl.png",
+    image: "https://res.cloudinary.com/su6mdywy/image/upload/v1784741861/skincare_m825vx.png",
     subtitle: "Creams, lotions & face care"
   },
   {
     label: "Hair Care",
     category: "Hair Care",
-    image: "https://res.cloudinary.com/su6mdywy/image/upload/v1784417462/banner_ts96yl.png",
+    image: "https://res.cloudinary.com/su6mdywy/image/upload/v1784742291/haircare_moefgx.png",
     subtitle: "Shampoo & conditioners"
   },
   {
     label: "Oral Care",
     category: "Oral Care",
-    image: "https://res.cloudinary.com/su6mdywy/image/upload/v1784417462/banner_ts96yl.png",
+    image: "https://res.cloudinary.com/su6mdywy/image/upload/v1784742393/oralcare_aibe4p.png",
     subtitle: "Toothpaste & brushes"
   },
   {
     label: "Kitchen",
     category: "Kitchen",
-    image: "https://res.cloudinary.com/su6mdywy/image/upload/v1784417462/banner_ts96yl.png",
+    image: "https://res.cloudinary.com/su6mdywy/image/upload/v1784743069/kitchen_djmxgd.png",
     subtitle: "Daily kitchen essentials"
   },
   {
     label: "Crockery",
     category: "Crockery",
-    image: "https://res.cloudinary.com/su6mdywy/image/upload/v1784417462/banner_ts96yl.png",
+    image: "https://res.cloudinary.com/su6mdywy/image/upload/v1784742757/crockery_zq9we4.png",
     subtitle: "Beautiful dinnerware"
   },
   {
     label: "Cosmetics",
     category: "Cosmetics",
-    image: "https://res.cloudinary.com/su6mdywy/image/upload/v1784417462/banner_ts96yl.png",
+    image: "https://res.cloudinary.com/su6mdywy/image/upload/v1784743169/cosmetics_d3wvxj.png",
     subtitle: "Beauty & makeup"
   },
   {
     label: "Gifting",
     category: "Gifting",
-    image: "https://res.cloudinary.com/su6mdywy/image/upload/v1784417462/banner_ts96yl.png",
+    image: "https://res.cloudinary.com/su6mdywy/image/upload/v1784743269/gifting_elunyx.png",
     subtitle: "Gift hampers & more"
   }
 ];
@@ -133,51 +133,6 @@ export default function Hero({ totalProducts, inStockCount, categoryCount, onCat
             Shop Now ↓
           </button>
         </div>
-
-        {/* Right: clickable category showcase */}
-        {/* <div className={styles.right}>
-          <div className={styles.showcase}>
-            {SHOWCASE_ITEMS.map((item, i) => (
-              <button
-                key={i}
-                className={`${styles.showcaseItem} ${i === activeIndex ? styles.showcaseActive : ''}`}
-                onClick={() => handleCategoryClick(item.category)}
-                title={`Browse ${item.label}`}
-              >
-                <span className={styles.showcaseEmoji}>{item.emoji}</span>
-                <span className={styles.showcaseLabel}>{item.label}</span>
-              </button>
-            ))}
-          </div>
-        </div> */}
-
-        {/* <div className={styles.right}>
-          <div
-            className={styles.sliderCard}
-            onClick={() => handleCategoryClick(SHOWCASE_ITEMS[activeIndex].category)}
-          >
-            <img
-              src={SHOWCASE_ITEMS[activeIndex].image}
-              alt={SHOWCASE_ITEMS[activeIndex].label}
-              className={styles.sliderImage}
-            />
-
-            <div className={styles.sliderOverlay}>
-              <h3>{SHOWCASE_ITEMS[activeIndex].label}</h3>
-              <p>{SHOWCASE_ITEMS[activeIndex].subtitle}</p>
-            </div>
-          </div>
-
-          <div className={styles.dots}>
-            {SHOWCASE_ITEMS.map((_, i) => (
-              <button
-                key={i}
-                className={`${styles.dot} ${i === activeIndex ? styles.activeDot : ""}`}
-                onClick={() => setActiveIndex(i)}
-              />
-            ))}
-          </div>
-        </div> */}
 
         <div className={styles.right}>
           <Swiper
