@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import Fuse from 'fuse.js';
+import { WA_NUMBER } from './utils/constants';
 
 import Header        from './components/Header';
 import Hero          from './components/Hero';
@@ -10,29 +11,32 @@ import AuthModal     from './components/AuthModal';
 import AboutUs       from './components/AboutUs';
 import ContactUs     from './components/ContactUs';
 import WAFloat       from './components/WAFloat';
-import AdminPanel from './pages/AdminPanel';
-import { saveUserProfile, logEnquiry } from './firebase/users';
+import AdminPanel    from './pages/AdminPanel';
+import AccountSettings from './components/AccountSettings';
+import CartDrawer from './components/CartDrawer';
+import OffersSection from './components/OffersSection';
 
+import { saveUserProfile, logEnquiry } from './firebase/users';
 import { PRODUCTS as SEED_PRODUCTS, CATEGORIES } from './data/products';
 import { FUSE_OPTIONS, buildWAUrl } from './utils/constants';
 import { subscribeToProducts } from './firebase/products';
 import { onAuthChange, logoutUser } from './firebase/auth';
 
-import AccountSettings from './components/AccountSettings';
-import { hasPasswordProvider } from './firebase/auth';
-
 import styles from './App.module.css';
 
 export default function App() {
   // Auth
-  const [user, setUser]              = useState(null);
+  const [user, setUser]               = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
-  const [showModal, setShowModal]    = useState(false);
-  const [modalMode, setModalMode]    = useState('login');
-  const [pendingProduct, setPending] = useState(null);
+  const [showModal, setShowModal]     = useState(false);
+  const [modalMode, setModalMode]     = useState('login');
+  const [pendingProduct, setPending]  = useState(null);
+
+  // Account settings
+  const [showAccountSettings, setShowAccountSettings] = useState(false);
 
   // Products from Firestore
-  const [products, setProducts] = useState(SEED_PRODUCTS);
+  const [products, setProducts]               = useState(SEED_PRODUCTS);
   const [productsLoading, setProductsLoading] = useState(true);
 
   // Product detail
@@ -43,19 +47,24 @@ export default function App() {
   const [activeCategory, setCategory] = useState('All');
   const [sortBy, setSortBy]           = useState('default');
   const [stockOnly, setStockOnly]     = useState(false);
-  const [showAccountSettings, setShowAccountSettings] = useState(false);
+  const [badgeFilter, setBadgeFilter] = useState('all');
+  const [scrollPosition, setScrollPosition] = useState(0);
+
+  // Cart state
+  const [cart, setCart]           = useState([]);
+  const [showCart, setShowCart]   = useState(false);
 
   // Listen to Firebase auth state
   useEffect(() => {
     const unsub = onAuthChange(firebaseUser => {
       if (firebaseUser) {
         const userData = {
-          name: firebaseUser.displayName || firebaseUser.email.split('@')[0],
+          name:  firebaseUser.displayName || firebaseUser.email.split('@')[0],
           email: firebaseUser.email,
-          uid: firebaseUser.uid,
+          uid:   firebaseUser.uid,
         };
         setUser(userData);
-        saveUserProfile(userData); // Ensure profile is saved even on session restore
+        saveUserProfile(userData);
       } else {
         setUser(null);
       }
@@ -70,7 +79,6 @@ export default function App() {
       if (firestoreProducts.length > 0) {
         setProducts(firestoreProducts);
       } else {
-        // Firestore is empty — use seed data
         setProducts(SEED_PRODUCTS);
       }
       setProductsLoading(false);
@@ -87,10 +95,11 @@ export default function App() {
       : products;
     if (activeCategory !== 'All') results = results.filter(p => p.category === activeCategory);
     if (stockOnly) results = results.filter(p => p.inStock);
+    if (badgeFilter !== 'all') results = results.filter(p => p.badge === badgeFilter);
     if (sortBy === 'low')  return [...results].sort((a, b) => a.price - b.price);
     if (sortBy === 'high') return [...results].sort((a, b) => b.price - a.price);
     return results;
-  }, [searchQuery, activeCategory, sortBy, stockOnly, products, fuse]);
+  }, [searchQuery, activeCategory, sortBy, stockOnly, badgeFilter, products, fuse]);
 
   function handleBuy(product) {
     if (!product.inStock) return;
@@ -101,17 +110,28 @@ export default function App() {
       return;
     }
     window.open(buildWAUrl(product.name, product.price), '_blank', 'noopener,noreferrer');
-    logEnquiry(user.uid, product); // Log this enquiry
+    logEnquiry(user.uid, product);
   }
 
   function handleAuth(userData) {
-    setUser(userData);  
+    setUser(userData);
     setShowModal(false);
-    saveUserProfile(userData); // Save/update user profile in Firestore
+    saveUserProfile(userData);
     if (pendingProduct) {
       window.open(buildWAUrl(pendingProduct.name, pendingProduct.price), '_blank', 'noopener,noreferrer');
-      logEnquiry(userData.uid, pendingProduct); // Log this enquiry
+      logEnquiry(userData.uid, pendingProduct);
       setPending(null);
+    }
+  }
+
+  function handleSearchKeyDown(e) {
+    if (e.key === 'Enter' && searchQuery.trim().length > 1) {
+      const results = fuse.search(searchQuery).map(r => r.item);
+      if (results.length > 0) {
+        setScrollPosition(window.scrollY);
+        setDetailProduct(results[0]);
+        setSearchQuery('');
+      }
     }
   }
 
@@ -120,13 +140,133 @@ export default function App() {
     setUser(null);
   }
 
+  // function handleAddToCart(product) {
+  //   if (!product.inStock) return;
+  //   setCart(prev => {
+  //     const existing = prev.find(item => item.id === product.id);
+  //     if (existing) {
+  //       return prev.map(item => item.id === product.id ? { ...item, qty: item.qty + 1 } : item);
+  //     }
+  //     return [...prev, { ...product, qty: 1 }];
+  //   });
+  // }
+
+  function handleAddToCart(product) {
+    if (!product.inStock) return;
+
+    setCart(prev => {
+      const existing = prev.find(item => item.id === product.id);
+
+      // Remove
+      if (product.qty === -1) {
+        if (!existing) return prev;
+
+        if (existing.qty === 1) {
+          return prev.filter(item => item.id !== product.id);
+        }
+
+        return prev.map(item =>
+          item.id === product.id
+            ? { ...item, qty: item.qty - 1 }
+            : item
+        );
+      }
+
+      // Add
+      if (existing) {
+        return prev.map(item =>
+          item.id === product.id
+            ? { ...item, qty: item.qty + 1 }
+            : item
+        );
+      }
+
+      return [...prev, { ...product, qty: 1 }];
+    });
+  }
+
+  function handleUpdateQty(id, qty) {
+    if (qty < 1) { handleRemoveFromCart(id); return; }
+    setCart(prev => prev.map(item => item.id === id ? { ...item, qty } : item));
+  }
+
+  function handleRemoveFromCart(id) {
+    setCart(prev => prev.filter(item => item.id !== id));
+  }
+
+  function handleCartCheckout() {
+    const itemsList = cart.map(item => `• ${item.name} x${item.qty} — ₹${item.price * item.qty}`).join('\n');
+    const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+    const message = `Hi! I'd like to order the following:\n\n${itemsList}\n\nTotal: ₹${total}`;
+    window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
+  }
+
+  function handleClearCart() {
+    setCart([]);
+  }
+
   const inStockCount  = products.filter(p => p.inStock).length;
   const categoryCount = CATEGORIES.length - 1;
 
+  // Shared header props
+  const headerProps = {
+    user,
+    searchQuery,
+    onSearch:          setSearchQuery,
+    onLogin:           () => { setModalMode('login');    setShowModal(true); setPending(null); },
+    onRegister:        () => { setModalMode('register'); setShowModal(true); setPending(null); },
+    onLogout:          handleLogout,
+    onAccountSettings: () => setShowAccountSettings(true),
+    searchResults:     searchQuery.trim().length > 1 ? fuse.search(searchQuery).map(r => r.item) : [],
+    onSearchKeyDown:   handleSearchKeyDown,
+    onSearchSelect:    product => { setSearchQuery(''); setScrollPosition(window.scrollY); setDetailProduct(product); },
+    cartCount:         cart.reduce((sum, item) => sum + item.qty, 0), 
+    onCartOpen:        () => setShowCart(true), 
+    onSearchKeyDown:   handleSearchKeyDown,
+  };
+
+  // Shared modals
+  const modals = (
+    <>
+      {showCart && (
+        <CartDrawer
+          cart={cart}
+          onClose={() => setShowCart(false)}
+          onUpdateQty={handleUpdateQty}
+          onRemove={handleRemoveFromCart}
+          onCheckout={handleCartCheckout}
+          onClearCart={handleClearCart}
+          user={user}
+          onLoginRequired={() => {
+            setShowCart(false);
+            setModalMode('login');
+            setShowModal(true);
+          }}
+        />
+      )}
+      {showModal && (
+        <AuthModal
+          mode={modalMode}
+          pendingProduct={pendingProduct}
+          onAuth={handleAuth}
+          onClose={() => { setShowModal(false); setPending(null); }}
+        />
+      )}
+      {showAccountSettings && (
+        <AccountSettings
+          user={user}
+          onClose={() => setShowAccountSettings(false)}
+          onNameUpdate={newName => setUser(prev => ({ ...prev, name: newName }))}
+        />
+      )}
+    </>
+  );
+
+  // Loading screen
   if (authLoading) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--navy)' }}>
-        <div style={{ color: 'var(--mustard)', fontFamily: 'var(--font-display)', fontSize: '24px' }}>Divine Collections</div>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--green)' }}>
+        <div style={{ color: 'var(--gold)', fontFamily: 'var(--font-display)', fontSize: '24px' }}>Divine Collections</div>
       </div>
     );
   }
@@ -136,24 +276,49 @@ export default function App() {
     return <AdminPanel />;
   }
 
+  // Product detail — full page
+
+  if (detailProduct) {
+    return (
+      <>
+        <Header {...headerProps} />
+        <ProductDetail
+          product={detailProduct}
+          cart={cart}
+          onClose={() => {
+            setDetailProduct(null);
+            setTimeout(() => window.scrollTo({ top: scrollPosition, behavior: 'instant' }), 50);
+          }}
+          onBuy={product => {
+            setDetailProduct(null);
+            handleBuy(product);
+          }}
+          onAddToCart={handleAddToCart}
+        />
+        {modals}
+      </>
+    );
+  }
+
+  // Main catalogue
   return (
     <>
-
-      <Header
-        user={user}
-        searchQuery={searchQuery}
-        onSearch={setSearchQuery}
-        onLogin={() => { setModalMode('login'); setShowModal(true); setPending(null); }}
-        onRegister={() => { setModalMode('register'); setShowModal(true); setPending(null); }}
-        onLogout={handleLogout}
-        onAccountSettings={() => setShowAccountSettings(true)}
-      />
+      <Header {...headerProps} />
 
       <Hero
         totalProducts={products.length}
         inStockCount={inStockCount}
         categoryCount={categoryCount}
         onCategoryClick={setCategory}
+      />
+
+      <OffersSection
+        products={products} 
+        onViewDetail={product => {
+          setScrollPosition(window.scrollY);
+          setDetailProduct(product);
+        }}
+        onAddToCart={handleAddToCart}
       />
 
       <main className={styles.main} id="products">
@@ -165,6 +330,8 @@ export default function App() {
           onSortChange={setSortBy}
           stockOnly={stockOnly}
           onStockToggle={() => setStockOnly(v => !v)}
+          badgeFilter={badgeFilter}
+          onBadgeFilterChange={setBadgeFilter}
           resultCount={filteredProducts.length}
           searchQuery={searchQuery}
         />
@@ -186,8 +353,11 @@ export default function App() {
               <ProductCard
                 key={product.id}
                 product={product}
+                cartItem={cart.find(item => item.id === product.id)}
                 onBuy={handleBuy}
-                onViewDetail={setDetailProduct}
+                // onViewDetail={setDetailProduct}
+                onViewDetail={product => {setScrollPosition(window.scrollY); setDetailProduct(product);}}
+                onAddToCart={handleAddToCart}
               />
             ))}
           </div>
@@ -204,35 +374,9 @@ export default function App() {
         &nbsp;·&nbsp; © {new Date().getFullYear()}
       </footer>
 
-      {detailProduct && (
-        <ProductDetail
-          product={detailProduct}
-          onClose={() => setDetailProduct(null)}
-          onBuy={product => {
-            setDetailProduct(null);
-            handleBuy(product);
-          }}
-        />
-      )}
-
-      {showModal && (
-        <AuthModal
-          mode={modalMode}
-          pendingProduct={pendingProduct}
-          onAuth={handleAuth}
-          onClose={() => { setShowModal(false); setPending(null); }}
-        />
-      )}
-
-      {showAccountSettings && (
-        <AccountSettings
-          user={user}
-          onClose={() => setShowAccountSettings(false)}
-          onNameUpdate={newName => setUser(prev => ({ ...prev, name: newName }))}
-        />
-      )}
-
       <WAFloat />
+
+      {modals}
     </>
   );
 }

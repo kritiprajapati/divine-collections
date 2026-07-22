@@ -595,6 +595,35 @@
   flex-shrink: 0;
 }
 
+.fieldHint {
+  font-size: 12px;
+  color: var(--text-light);
+  margin-top: 4px;
+}
+
+.listHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.searchInput {
+  height: 38px;
+  padding: 0 12px;
+  border-radius: var(--r);
+  border: 1.5px solid var(--border);
+  background: var(--white);
+  font-family: var(--font-body);
+  font-size: 14px;
+  outline: none;
+  min-width: 220px;
+  transition: border-color var(--transition);
+}
+.searchInput:focus { border-color: var(--green); }
+
 /* Responsive */
 @media (max-width: 768px) {
   .stats { grid-template-columns: repeat(2, 1fr); }

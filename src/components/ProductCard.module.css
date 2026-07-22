@@ -8,6 +8,7 @@
   transition: transform 0.22s ease, box-shadow 0.22s ease;
   display: flex;
   flex-direction: column;
+  cursor: pointer;
 }
 .card:hover {
   transform: translateY(-4px);
@@ -102,7 +103,7 @@
 }
 
 .name {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: 16px;
   font-weight: 600;
   color: var(--text);
@@ -137,15 +138,15 @@
 }
 
 .price {
-  font-family: var(--font-display);
-  font-size: 20px;
+  font-family: var(--font-body);
+  font-size: 18px;
   font-weight: 600;
   color: var(--navy);
   white-space: nowrap;
 }
 .unit {
   font-family: var(--font-body);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 400;
   color: var(--text-light);
 }
@@ -193,6 +194,99 @@
 .imageWrap:hover .productImage {
   transform: scale(1.1);
 }
+
+.priceBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.mrp {
+  font-size: 12px;
+  color: var(--text-light);
+  text-decoration: line-through;
+}
+
+.btnCart {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: var(--r);
+  border: none;
+  background: var(--navy);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.18s ease;
+}
+.btnCart:hover { background: var(--navy-light); }
+.btnCart:disabled { background: var(--border); color: var(--text-light); cursor: not-allowed; }
+
+.cartQtyBadge {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: var(--navy);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 100px;
+}
+
+.qtyControl {
+  display: flex;
+  align-items: center;
+  background: var(--white);
+  border-radius: var(--r);
+  border: 1.5px solid var(--navy);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.qtyControl button {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: var(--navy);
+  width: 28px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  transition: background var(--transition);
+}
+.qtyControl button:hover { background: var(--navy-pale); }
+
+.qtyControl span {
+  font-size: 13px;
+  font-weight: 700;
+  min-width: 24px;
+  text-align: center;
+  color: var(--navy);
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btnCartDisabled {
+  background: var(--border);
+  color: var(--text-light);
+  cursor: not-allowed;
+  border: none;
+}
+.btnCartDisabled:hover { background: var(--border); color: var(--text-light); }
 
 /* Responsive */
 @media (max-width: 480px) {

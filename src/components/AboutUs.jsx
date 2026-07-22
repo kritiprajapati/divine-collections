@@ -45,12 +45,32 @@ export default function AboutUs() {
 
         <div className={styles.visual}>
           <img
+            // src="https://res.cloudinary.com/su6mdywy/image/upload/v1784024224/Divine_logo_xim45x.png"
             src="https://res.cloudinary.com/su6mdywy/image/upload/v1784025642/Divine_logo_vcs2ds.png"
             alt="Divine Collections"
             className={styles.logoImage}
           />
         </div>
+      </div>
 
+      {/* How to shop — OUTSIDE the grid, full width below */}
+      <div className={styles.howTo}>
+        <h3 className={styles.howToTitle}>How to shop with us</h3>
+        <div className={styles.steps}>
+          {[
+            { icon: '🔍', title: 'Browse', desc: 'Explore our products by category or use the search bar to find what you need.' },
+            { icon: '🛒', title: 'Add to Cart', desc: 'Add single or multiple items to your cart. You can adjust quantities anytime.' },
+            { icon: '💬', title: 'Order on WhatsApp', desc: 'Click "Order via WhatsApp" — your cart is sent directly to us as a message.' },
+            { icon: '💳', title: 'Pay & Receive', desc: 'We confirm your order, share a payment QR code, and arrange delivery.' },
+          ].map((step, i) => (
+            <div key={i} className={styles.step}>
+              <div className={styles.stepIcon}>{step.icon}</div>
+              <div className={styles.stepNum}>Step {i + 1}</div>
+              <div className={styles.stepTitle}>{step.title}</div>
+              <div className={styles.stepDesc}>{step.desc}</div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

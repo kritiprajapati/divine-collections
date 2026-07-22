@@ -7,47 +7,66 @@ const WhatsAppIcon = () => (
   </svg>
 );
 
-export default function ProductCard({ product, onBuy, onViewDetail}) {
+export default function ProductCard({ product, onBuy, onViewDetail, onAddToCart, cartItem }) {
   const { name, brand, category, price, inStock, emoji, description, badge } = product;
+  const qtyInCart = cartItem ? cartItem.qty : 0;
 
   return (
-    <article className={styles.card}>
-      <div className={styles.imageWrap} onClick={() => onViewDetail(product)}>
-        
+    <article className={styles.card} onClick={() => onViewDetail(product)}>
+      <div className={styles.imageWrap}>
         {product.imageUrl ? (
-          <img src={product.imageUrl} alt={name} className={styles.productImage} />) : (<span className={styles.emoji} role="img" aria-label={name}>{emoji}</span>)}
-
-        {/* Stock Badge - top left */}
+          <img src={product.imageUrl} alt={name} className={styles.productImage} />
+        ) : (
+          <span className={styles.emoji} role="img" aria-label={name}>{emoji}</span>
+        )}
         <span className={`${styles.stockBadge} ${inStock ? styles.badgeIn : styles.badgeOut}`}>
           {inStock ? 'In Stock' : 'Out of Stock'}
+        </span>
+        {badge && (
+          <span className={`${styles.labelBadge} ${badge === 'New' ? styles.labelNew : styles.labelFeatured}`}>
+            {badge}
           </span>
-
-        {/* Featured / New badge top right, only if set */} 
-        {badge && (<span className={`${styles.labelBadge} ${badge === 'New' ? styles.labelNew : styles.labelFeatured}`}>
-          {badge}</span>)}
+        )}
+        {/* Cart quantity badge */}
+        {qtyInCart > 0 && (
+          <span className={styles.cartQtyBadge}>{qtyInCart} in cart</span>
+        )}
       </div>
 
-      {/* Card body */}
       <div className={styles.body}>
         <p className={styles.category}>{category}</p>
-        <h2 className={styles.name} onClick={() => onViewDetail(product)}>{name}</h2>
+        <h2 className={styles.name}>{name}</h2>
         <p className={styles.brand}>{brand}</p>
         <p className={styles.desc}>{description}</p>
 
         <div className={styles.footer}>
-          <div className={styles.price}>
-            ₹{price}<span className={styles.unit}>/unit</span>
-        </div>
-        
-          <button
-            className={`${styles.btnWA} ${!inStock ? styles.btnWADisabled : ''}`}
-            onClick={() => onBuy(product)}
-            disabled={!inStock}
-            aria-label={inStock ? `Buy ${name} via WhatsApp` : `${name} is out of stock`}
-          >
-            <WhatsAppIcon />
-            {inStock ? 'Buy Now' : 'Unavailable'}
-          </button>
+          <div className={styles.priceBlock}>
+            {product.originalPrice && (
+              <span className={styles.mrp}>₹{product.originalPrice}</span>
+            )}
+            <div className={styles.price}>
+              ₹{price}<span className={styles.unit}>/unit</span>
+            </div>
+          </div>
+
+          {inStock ? (
+            qtyInCart > 0 ? (
+              <div className={styles.qtyControl} onClick={e => e.stopPropagation()}>
+                <button onClick={() => onAddToCart({ ...product, qty: -1 })}>−</button>
+                <span>{qtyInCart}</span>
+                <button onClick={() => onAddToCart(product)}>+</button>
+              </div>
+            ) : (
+              <button
+                className={styles.btnCart}
+                onClick={e => { e.stopPropagation(); onAddToCart(product); }}
+              >
+                + Cart
+              </button>
+            )
+          ) : (
+            <button className={`${styles.btnCart} ${styles.btnCartDisabled}`} disabled>N/A</button>
+          )}
         </div>
       </div>
     </article>

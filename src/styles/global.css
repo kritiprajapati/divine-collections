@@ -11,18 +11,11 @@
   padding: 0;
 }
 
-:root {
-  /* Palette */
-  /* --navy:        #1B4332;
-  --navy-light:  #2D6A4F;
-  --navy-pale:   #D8F3DC;
-  --mustard:         #C9A84C;
-  --mustard-light:   #F0D79A;
-  --ivory:        #FDFBF7;
-  --ivory-dark:   #F5F1E8;
-  --periwinkle:         #95B8A0;
-  --periwinkle-light:   #E8F4EE; */
+#products {
+    scroll-margin-top: 60px;
+  }
 
+:root {
   --navy:         #1B2A4A;
   --navy-light:   #2E4374;
   --navy-pale:    #DCE3F0;

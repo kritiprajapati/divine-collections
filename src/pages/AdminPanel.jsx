@@ -8,7 +8,7 @@ import { uploadImageToCloudinary } from '../utils/cloudinary';
 const ADMIN_EMAIL = 'divinecollectionsstore@gmail.com';
 
 const EMPTY_FORM = {
-  name: '', brand: '', category: 'Hygiene', price: '',
+  name: '', brand: '', category: 'Hygiene', price: '', originalPrice: '',
   inStock: true, emoji: '🧼', badge: '', description: '', tags: '', imageUrl: '',
 };
 
@@ -25,6 +25,7 @@ export default function AdminPanel() {
   const [showForm, setShowForm]   = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [imagePreview, setImagePreview] = useState('');
+  const [adminSearch, setAdminSearch] = useState('');
 
   useEffect(() => {
     const unsub = onAuthChange(u => {
@@ -61,9 +62,11 @@ export default function AdminPanel() {
       const data = {
         ...form,
         price: Number(form.price),
+        originalPrice: form.originalPrice ? Number(form.originalPrice) : null,
         tags: form.tags.split(',').map(t => t.trim()).filter(Boolean),
         badge: form.badge || null,
       };
+
       if (editingId) {
         await updateProduct(editingId, data);
         showMsg('✅ Product updated!');
@@ -107,6 +110,7 @@ export default function AdminPanel() {
         brand: product.brand,
         category: product.category,
         price: product.price,
+        originalPrice: product.originalPrice || '',
         inStock: product.inStock,
         emoji: product.emoji,
         badge: product.badge || '',
@@ -114,6 +118,7 @@ export default function AdminPanel() {
         tags: Array.isArray(product.tags) ? product.tags.join(', ') : '',
         imageUrl: product.imageUrl || '',
     });
+
     setImagePreview(product.imageUrl || '');
     setEditingId(product.id);
     setShowForm(true);
@@ -193,6 +198,14 @@ export default function AdminPanel() {
       </div>
     );
   }
+
+  const visibleProducts = adminSearch.trim()
+      ? products.filter(p =>
+          p.name.toLowerCase().includes(adminSearch.toLowerCase()) ||
+          p.brand.toLowerCase().includes(adminSearch.toLowerCase()) ||
+          p.category.toLowerCase().includes(adminSearch.toLowerCase())
+        )
+      : products;
 
   return (
     <div className={styles.page}>
@@ -275,10 +288,16 @@ export default function AdminPanel() {
                     ))}
                   </select>
                 </div>
+
                 <div className={styles.formGroup}>
-                  <label>Price (₹) *</label>
-                  <input required type="number" value={form.price} onChange={e => setForm({...form, price: e.target.value})} placeholder="e.g. 58" />
+                    <label>Selling Price (₹) *</label>
+                    <input required type="number" value={form.price} onChange={e => setForm({...form, price: e.target.value})} placeholder="e.g. 150" />
                 </div>
+                <div className={styles.formGroup}>
+                    <label>MRP (₹) — optional</label>
+                    <input type="number" value={form.originalPrice} onChange={e => setForm({...form, originalPrice: e.target.value})} placeholder="e.g. 495" />
+                </div>
+
                 <div className={styles.formGroup}>
                   <label>Emoji</label>
                   <input value={form.emoji} onChange={e => setForm({...form, emoji: e.target.value})} placeholder="e.g. 🧼" />
@@ -312,7 +331,14 @@ export default function AdminPanel() {
                 </div>
                 <div className={`${styles.formGroup} ${styles.fullWidth}`}>
                   <label>Description *</label>
-                  <textarea required value={form.description} onChange={e => setForm({...form, description: e.target.value})} placeholder="Short product description…" rows={3} />
+                  <textarea
+                    required
+                    value={form.description}
+                    onChange={e => setForm({...form, description: e.target.value})}
+                    placeholder={"Short description…\n\nFor bullet points, press Enter between each point:\n- Point one\n- Point two"}
+                    rows={6}
+                    />
+                    <p className={styles.fieldHint}>💡 Press Enter between lines to create bullet points in the product detail view.</p>
                 </div>
                 <div className={`${styles.formGroup} ${styles.fullWidth}`}>
                   <label>Tags (comma separated)</label>
@@ -345,7 +371,17 @@ export default function AdminPanel() {
 
         {/* Product List */}
         <div className={styles.productList}>
-          <h2 className={styles.sectionTitle}>All Products ({products.length})</h2>
+          {/* <h2 className={styles.sectionTitle}>All Products ({products.length})</h2> */}
+          <div className={styles.listHeader}>
+            <h2 className={styles.sectionTitle}>All Products ({products.length})</h2>
+            <input
+              className={styles.searchInput}
+              type="search"
+              placeholder="Search products…"
+              value={adminSearch}
+              onChange={e => setAdminSearch(e.target.value)}
+            />
+          </div>
           {products.length === 0 ? (
             <div className={styles.empty}>
               <p>No products in Firestore yet.</p>

@@ -1,7 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styles from './Header.module.css';
+import SearchDropdown from './SearchDropdown';
 
-export default function Header({ user, searchQuery, onSearch, onLogin, onRegister, onLogout, onAccountSettings }) {
+export default function Header({ user, searchQuery, onSearch, onLogin, 
+  onRegister, onLogout, onAccountSettings, searchResults, onSearchSelect, 
+  onSearchKeyDown, cartCount, onCartOpen }) {
+  const [searchOpen, setSearchOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -40,19 +44,31 @@ export default function Header({ user, searchQuery, onSearch, onLogin, onRegiste
               type="search"
               placeholder="Search soaps, shampoos, brands…"
               value={searchQuery}
-              onChange={e => onSearch(e.target.value)}
+              onChange={e => { onSearch(e.target.value); setSearchOpen(true); }}
               autoComplete="off"
               className={styles.searchInput}
+              onKeyDown={onSearchKeyDown}
+            />
+            <SearchDropdown
+              results={searchResults}
+              onSelect={product => { onSearchSelect(product); setSearchOpen(false); }}
+              visible={searchOpen && searchQuery.trim().length > 1}
+              onClose={() => setSearchOpen(false)}
             />
           </div>
 
           <nav className={styles.navLinks}>
             <button className={styles.navLink} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Home</button>
+            <button className={styles.navLink} onClick={() => scrollTo('products')}>Products</button>
             <button className={styles.navLink} onClick={() => scrollTo('about')}>About</button>
-            <button className={styles.navLink} onClick={() => scrollTo('contact')}>Contact</button>
+            <button className={styles.navLink} onClick={() => scrollTo('contact')}>Contact Us</button>
           </nav>
 
           <div className={styles.actions}>
+            <button className={styles.cartBtn} onClick={onCartOpen} aria-label="Cart">
+              🛒
+              {cartCount > 0 && <span className={styles.cartBadge}>{cartCount}</span>}
+            </button>
             {user ? (
               <div className={styles.accountWrap} ref={dropdownRef}>
                 <button
@@ -95,21 +111,31 @@ export default function Header({ user, searchQuery, onSearch, onLogin, onRegiste
         </div>
 
         <div className={styles.row2}>
+
           <div className={styles.searchMobileWrap}>
             <span className={styles.searchIcon}>🔍</span>
             <input
               type="search"
               placeholder="Search products…"
               value={searchQuery}
-              onChange={e => onSearch(e.target.value)}
+              onChange={e => { onSearch(e.target.value); setSearchOpen(true); }}
               autoComplete="off"
               className={styles.searchInput}
+              onKeyDown={onSearchKeyDown}
+            />
+            <SearchDropdown
+              results={searchResults}
+              onSelect={product => { onSearchSelect(product); setSearchOpen(false); }}
+              visible={searchOpen && searchQuery.trim().length > 1}
+              onClose={() => setSearchOpen(false)}
             />
           </div>
+
           <div className={styles.mobileNav}>
             <button className={styles.navLink} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Home</button>
+            <button className={styles.navLink} onClick={() => scrollTo('products')}>Products</button>
             <button className={styles.navLink} onClick={() => scrollTo('about')}>About</button>
-            <button className={styles.navLink} onClick={() => scrollTo('contact')}>Contact</button>
+            <button className={styles.navLink} onClick={() => scrollTo('contact')}>Contact Us</button>
           </div>
         </div>
       </div>

@@ -3,15 +3,10 @@ import { SORT_OPTIONS } from '../utils/constants';
 import styles from './FilterBar.module.css';
 
 export default function FilterBar({
-  categories,
-  activeCategory,
-  onCategoryChange,
-  sortBy,
-  onSortChange,
-  stockOnly,
-  onStockToggle,
-  resultCount,
-  searchQuery,
+  categories, activeCategory, onCategoryChange,
+  sortBy, onSortChange, stockOnly, onStockToggle,
+  badgeFilter, onBadgeFilterChange,
+  resultCount, searchQuery,
 }) {
   return (
     <div className={styles.wrap}>
@@ -42,6 +37,16 @@ export default function FilterBar({
           {SORT_OPTIONS.map(opt => (
             <option key={opt.value} value={opt.value}>{opt.label}</option>
           ))}
+        </select>
+
+        <select
+          className={styles.sortSelect}
+          value={badgeFilter}
+          onChange={e => onBadgeFilterChange(e.target.value)}
+        >
+          <option value="all">All Products</option>
+          <option value="New">New</option>
+          <option value="Featured">Featured</option>
         </select>
 
         <label className={styles.stockToggle} onClick={onStockToggle}>

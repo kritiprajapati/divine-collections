@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from './ProductDetail.module.css';
 
 const WhatsAppIcon = () => (
@@ -7,61 +7,179 @@ const WhatsAppIcon = () => (
   </svg>
 );
 
-export default function ProductDetail({ product, onClose, onBuy }) {
+const ShareIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={styles.shareIcon}>
+    <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+  </svg>
+);
+
+export default function ProductDetail({ product, cart, onClose, onBuy, onAddToCart }) {
+  const [shareCopied, setShareCopied] = React.useState(false);
+  const cartItem = cart?.find(item => item.id === product.id);
+  const qtyInCart = cartItem ? cartItem.qty : 0;
+
+  // Scroll to top when product opens
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [product]);
+
   if (!product) return null;
   const { name, brand, category, price, inStock, emoji, description, badge, tags } = product;
 
-  function handleOverlayClick(e) {
-    if (e.target === e.currentTarget) onClose();
+  function handleShare() {
+    const url = `${window.location.origin}?product=${product.id}`;
+    if (navigator.share) {
+      navigator.share({ title: name, text: `Check out ${name} on Divine Collections!`, url });
+    } else {
+      navigator.clipboard.writeText(url);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2000);
+    }
   }
 
-  return (
-    <div className={styles.overlay} onClick={handleOverlayClick}>
-      <div className={styles.modal}>
-        <button className={styles.closeBtn} onClick={onClose} aria-label="Close">✕</button>
+  const descLines = description ? description.split('\n').filter(l => l.trim()) : [];
 
-        <div className={styles.inner}>
-          {/* Left: image */}
+  return (
+    <div className={styles.page}>
+      {/* Sticky top bar with back button */}
+      <div className={styles.topBar}>
+        <button className={styles.backBtn} onClick={onClose}>
+          ← Back
+        </button>
+        <span className={styles.breadcrumb}>
+          Divine Collections / {category} / {name}
+        </span>
+      </div>
+
+      <div className={styles.container}>
+        {/* Left: image */}
+        <div className={styles.imageSection}>
           <div className={styles.imageWrap}>
-            {product.imageUrl ? (<img src={product.imageUrl} alt={name} className={styles.productImage} />) : (<span className={styles.emoji}>{emoji}</span>)}
-            {badge && (
-              <span className={`${styles.badge} ${badge === 'New' ? styles.badgeNew : styles.badgeFeatured}`}>
-                {badge}
+            {product.imageUrl ? (
+              <img
+                src={product.imageUrl}
+                alt={name}
+                className={styles.productImage}
+              />
+            ) : (
+              <span className={styles.emoji}>{emoji}</span>
+            )}
+          </div>
+          {badge && (
+            <span className={`${styles.badge} ${badge === 'New' ? styles.badgeNew : styles.badgeFeatured}`}>
+              {badge}
+            </span>
+          )}
+        </div>
+
+        {/* Right: details */}
+        <div className={styles.details}>
+          <p className={styles.category}>{category}</p>
+          <h1 className={styles.name}>{name}</h1>
+          <p className={styles.brand}>by {brand}</p>
+
+          <div className={`${styles.stockPill} ${inStock ? styles.inStock : styles.outStock}`}>
+            {inStock ? '✓ In Stock' : '✗ Out of Stock'}
+          </div>
+
+          {/* Price */}
+          <div className={styles.priceBlock}>
+            {product.originalPrice && (
+              <span className={styles.mrp}>MRP ₹{product.originalPrice}</span>
+            )}
+            <div className={styles.price}>
+              ₹{price}<span className={styles.unit}>/unit</span>
+            </div>
+            {product.originalPrice && (
+              <span className={styles.discount}>
+                {Math.round((1 - price / product.originalPrice) * 100)}% off
               </span>
             )}
           </div>
 
-          {/* Right: details */}
-          <div className={styles.details}>
-            <p className={styles.category}>{category}</p>
-            <h2 className={styles.name}>{name}</h2>
-            <p className={styles.brand}>by {brand}</p>
+          {/* Buttons */}
+          <div className={styles.btnGroup}>
 
-            <div className={`${styles.stockPill} ${inStock ? styles.inStock : styles.outStock}`}>
-              {inStock ? '✓ In Stock' : '✗ Out of Stock'}
-            </div>
+            {/* <button
+              className={styles.btnCart}
+              onClick={() => onAddToCart(product)}
+              disabled={!inStock}>
+              🛒 Add to Cart
+            </button> */}
 
-            <p className={styles.desc}>{description}</p>
+            {inStock ? (
+              qtyInCart > 0 ? (
+                <div className={styles.qtyControl}>
+                  <button onClick={() => onAddToCart({ ...product, qty: -1 })}>
+                    −
+                  </button>
 
-            {/* Tags */}
-            <div className={styles.tags}>
-              {tags.map(tag => (
-                <span key={tag} className={styles.tag}>{tag}</span>
-              ))}
-            </div>
+                  <span>{qtyInCart}</span>
 
-            <div className={styles.priceRow}>
-              <div className={styles.price}>₹{price}<span className={styles.unit}>/unit</span></div>
+                  <button onClick={() => onAddToCart(product)}>
+                    +
+                  </button>
+                </div>
+              ) : (
+                <button
+                  className={styles.btnCart}
+                  onClick={() => onAddToCart(product)}
+                >
+                  🛒 Add to Cart
+                </button>
+              )
+            ) : (
               <button
-                className={`${styles.btnWA} ${!inStock ? styles.btnWADisabled : ''}`}
-                onClick={() => onBuy(product)}
-                disabled={!inStock}
+                className={`${styles.btnCart} ${styles.btnCartDisabled}`}
+                disabled
               >
-                <WhatsAppIcon />
-                {inStock ? 'Buy via WhatsApp' : 'Unavailable'}
+                Out of Stock
               </button>
+            )}
+
+            <button
+              className={`${styles.btnWA} ${!inStock ? styles.btnWADisabled : ''}`}
+              onClick={() => onBuy(product)}
+              disabled={!inStock}>
+              <WhatsAppIcon />
+              {inStock ? 'Buy' : 'Unavailable'}
+            </button>
+
+            <button className={styles.btnShare} onClick={handleShare}>
+              <ShareIcon />
+              {shareCopied ? 'Link Copied!' : 'Share'}
+            </button>
+          </div>
+
+          {/* Description */}
+          <div className={styles.descSection}>
+            <h3 className={styles.descTitle}>Product Description</h3>
+            <div className={styles.desc}>
+              {descLines.length > 1 ? (
+                <ul className={styles.descList}>
+                  {descLines.map((line, i) => (
+                    <li key={i}>{line.replace(/^[-•*]\s*/, '')}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p>{description}</p>
+              )}
             </div>
           </div>
+
+          {/* Tags */}
+          {tags && tags.length > 0 && (
+            <div className={styles.tagsSection}>
+              <h3 className={styles.descTitle}>Tags</h3>
+              <div className={styles.tags}>
+                {tags.map(tag => (
+                  <span key={tag} className={styles.tag}>{tag}</span>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
