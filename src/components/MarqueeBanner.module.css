@@ -1,0 +1,82 @@
+/* MarqueeBanner.module.css */
+
+.banner {
+  background: var(--mustard);
+  overflow: hidden;
+  padding: 14px 0;
+  position: relative;
+  border-top: 2px solid var(--navy);
+  border-bottom: 2px solid var(--navy);
+}
+
+/* Fade edges */
+.banner::before,
+.banner::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 80px;
+  z-index: 2;
+  pointer-events: none;
+}
+.banner::before {
+  left: 0;
+  background: linear-gradient(to right, var(--mustard), transparent);
+}
+.banner::after {
+  right: 0;
+  background: linear-gradient(to left, var(--mustard), transparent);
+}
+
+.track {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  width: max-content;
+  animation: scroll 18s linear infinite;
+}
+
+.track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 24px;
+  white-space: nowrap;
+}
+
+.icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.text {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.dot {
+  font-size: 8px;
+  color: var(--navy);
+  opacity: 0.5;
+  margin-left: 10px;
+}
+
+@media (max-width: 480px) {
+  .text { font-size: 14px; letter-spacing: 2px; }
+  .icon { font-size: 15px; }
+  .banner { padding: 11px 0; }
+}

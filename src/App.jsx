@@ -14,7 +14,7 @@ import WAFloat       from './components/WAFloat';
 import AdminPanel    from './pages/AdminPanel';
 import AccountSettings from './components/AccountSettings';
 import CartDrawer from './components/CartDrawer';
-import OffersSection from './components/OffersSection';
+import MarqueeBanner from './components/MarqueeBanner';
 
 import { saveUserProfile, logEnquiry } from './firebase/users';
 import { PRODUCTS as SEED_PRODUCTS, CATEGORIES } from './data/products';
@@ -312,14 +312,7 @@ export default function App() {
         onCategoryClick={setCategory}
       />
 
-      <OffersSection
-        products={products} 
-        onViewDetail={product => {
-          setScrollPosition(window.scrollY);
-          setDetailProduct(product);
-        }}
-        onAddToCart={handleAddToCart}
-      />
+      <MarqueeBanner />
 
       <main className={styles.main} id="products">
         <FilterBar
