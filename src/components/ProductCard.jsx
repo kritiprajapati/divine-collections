@@ -65,7 +65,7 @@ export default function ProductCard({ product, onBuy, onViewDetail, onAddToCart,
               </button>
             )
           ) : (
-            <button className={`${styles.btnCart} ${styles.btnCartDisabled}`} disabled>N/A</button>
+            <button className={`${styles.btnCart} ${styles.btnCartDisabled}`} disabled>Not Available</button>
           )}
         </div>
       </div>
