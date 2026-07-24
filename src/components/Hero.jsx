@@ -1,30 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styles from './Hero.module.css';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination } from 'swiper/modules';
 
 import 'swiper/css';
 import 'swiper/css/pagination';
-
-// import hygieneImg from '../assets/categories/hygiene.png';
-// import skincareImg from '../assets/categories/skincare.png';
-// import haircareImg from '../assets/categories/haircare.png';
-// import oralcareImg from '../assets/categories/oralcare.png';
-// import kitchenImg from '../assets/categories/kitchen.png';
-// import crockeryImg from '../assets/categories/crockery.png';
-// import cosmeticsImg from '../assets/categories/cosmetics.png';
-// import giftingImg from '../assets/categories/gifting.png';
-
-// const SHOWCASE_ITEMS = [
-//   { label: 'Hygiene',   emoji: '🧼', category: 'Hygiene'   },
-//   { label: 'Skincare',  emoji: '✨', category: 'Skincare'  },
-//   { label: 'Hair Care', emoji: '💆', category: 'Hair Care' },
-//   { label: 'Oral Care', emoji: '🦷', category: 'Oral Care' },
-//   { label: 'Kitchen',   emoji: '🍳', category: 'Kitchen'   },
-//   { label: 'Crockery',  emoji: '🍽️', category: 'Crockery'  },
-//   { label: 'Cosmetics', emoji: '💄', category: 'Cosmetics' },
-//   { label: 'Gifting',   emoji: '🎁', category: 'Gifting'   },
-// ];
 
 const SHOWCASE_ITEMS = [
   {
@@ -78,14 +58,14 @@ const SHOWCASE_ITEMS = [
 ];
 
 export default function Hero({ totalProducts, inStockCount, categoryCount, onCategoryClick }) {
-  const [activeIndex, setActiveIndex] = useState(0);
+  // const [activeIndex, setActiveIndex] = useState(0);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setActiveIndex(i => (i + 1) % SHOWCASE_ITEMS.length);
-    }, 3000);
-    return () => clearInterval(timer);
-  }, []);
+  // useEffect(() => {
+  //   const timer = setInterval(() => {
+  //     setActiveIndex(i => (i + 1) % SHOWCASE_ITEMS.length);
+  //   }, 3000);
+  //   return () => clearInterval(timer);
+  // }, []);
 
   function handleCategoryClick(category) {
     onCategoryClick(category);

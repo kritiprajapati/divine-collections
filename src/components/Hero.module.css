@@ -271,9 +271,11 @@
   }
 
   .scrollBtn {
-    width: 100%;
-    text-align: center;
-  }
+  width: 100%;
+  max-width: 260px;
+  box-sizing: border-box;
+  text-align: center;
+}
 
   .heroSlider {
     max-width: 100%;
