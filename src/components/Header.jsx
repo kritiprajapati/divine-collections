@@ -92,6 +92,21 @@ export default function Header({ user, searchQuery, onSearch, onLogin,
                     >
                       ⚙️ Account Settings
                     </button>
+
+                    <button
+                      className={styles.dropdownItem}
+                      onClick={() => { setDropdownOpen(false); onAccountSettings('enquiries'); }}
+                    >
+                      📦 My Enquiries
+                    </button>
+
+                    <button
+                      className={styles.dropdownItem}
+                      onClick={() => { setDropdownOpen(false); onAccountSettings('wishlist'); }}
+                    >
+                      ❤️ Wishlist
+                    </button>
+
                     <button
                       className={`${styles.dropdownItem} ${styles.dropdownItemDanger}`}
                       onClick={() => { setDropdownOpen(false); onLogout(); }}

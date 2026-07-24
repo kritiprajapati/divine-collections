@@ -1,22 +1,23 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import Fuse from 'fuse.js';
 import { WA_NUMBER } from './utils/constants';
 
-import Header        from './components/Header';
-import Hero          from './components/Hero';
-import FilterBar     from './components/FilterBar';
-import ProductCard   from './components/ProductCard';
-import ProductDetail from './components/ProductDetail';
-import AuthModal     from './components/AuthModal';
-import AboutUs       from './components/AboutUs';
-import ContactUs     from './components/ContactUs';
-import WAFloat       from './components/WAFloat';
-import AdminPanel    from './pages/AdminPanel';
+import Header          from './components/Header';
+import Hero            from './components/Hero';
+import FilterBar       from './components/FilterBar';
+import ProductCard     from './components/ProductCard';
+import ProductDetail   from './components/ProductDetail';
+import AuthModal       from './components/AuthModal';
+import AboutUs         from './components/AboutUs';
+import ContactUs       from './components/ContactUs';
+import WAFloat         from './components/WAFloat';
+import AdminPanel      from './pages/AdminPanel';
 import AccountSettings from './components/AccountSettings';
-import CartDrawer from './components/CartDrawer';
-import MarqueeBanner from './components/MarqueeBanner';
+import CartDrawer      from './components/CartDrawer';
+import MarqueeBanner   from './components/MarqueeBanner';
+import Toast           from './components/Toast';
 
-import { saveUserProfile, logEnquiry } from './firebase/users';
+import { saveUserProfile, logEnquiry, saveCartToFirestore, loadCartFromFirestore, addToWishlist, removeFromWishlist, getWishlist } from './firebase/users';
 import { PRODUCTS as SEED_PRODUCTS, CATEGORIES } from './data/products';
 import { FUSE_OPTIONS, buildWAUrl } from './utils/constants';
 import { subscribeToProducts } from './firebase/products';
@@ -34,13 +35,15 @@ export default function App() {
 
   // Account settings
   const [showAccountSettings, setShowAccountSettings] = useState(false);
+  const [accountTab, setAccountTab]                   = useState('profile');
 
-  // Products from Firestore
+  // Products
   const [products, setProducts]               = useState(SEED_PRODUCTS);
   const [productsLoading, setProductsLoading] = useState(true);
 
   // Product detail
-  const [detailProduct, setDetailProduct] = useState(null);
+  const [detailProduct, setDetailProduct]   = useState(null);
+  const [scrollPosition, setScrollPosition] = useState(0);
 
   // Filters
   const [searchQuery, setSearchQuery] = useState('');
@@ -48,15 +51,27 @@ export default function App() {
   const [sortBy, setSortBy]           = useState('default');
   const [stockOnly, setStockOnly]     = useState(false);
   const [badgeFilter, setBadgeFilter] = useState('all');
-  const [scrollPosition, setScrollPosition] = useState(0);
 
-  // Cart state
-  const [cart, setCart]           = useState([]);
-  const [showCart, setShowCart]   = useState(false);
+  // Cart
+  const [cart, setCart]         = useState([]);
+  const [showCart, setShowCart] = useState(false);
+
+  // Wishlist
+  const [wishlist, setWishlist] = useState([]);
+
+  // Toast
+  const [toast, setToast]           = useState('');
+  const [toastVisible, setToastVisible] = useState(false);
+
+  function showToast(msg) {
+    setToast(msg);
+    setToastVisible(true);
+    setTimeout(() => setToastVisible(false), 2000);
+  }
 
   // Listen to Firebase auth state
   useEffect(() => {
-    const unsub = onAuthChange(firebaseUser => {
+    const unsub = onAuthChange(async firebaseUser => {
       if (firebaseUser) {
         const userData = {
           name:  firebaseUser.displayName || firebaseUser.email.split('@')[0],
@@ -65,28 +80,41 @@ export default function App() {
         };
         setUser(userData);
         saveUserProfile(userData);
+        // Restore cart from Firestore
+        const savedCart = await loadCartFromFirestore(firebaseUser.uid);
+        if (savedCart.length > 0) setCart(savedCart);
+        // Load wishlist
+        const savedWishlist = await getWishlist(firebaseUser.uid);
+        setWishlist(savedWishlist);
       } else {
         setUser(null);
+        setCart([]);
+        setWishlist([]);
       }
       setAuthLoading(false);
     });
     return unsub;
   }, []);
 
-  // Listen to Firestore products in real time
+  // Save cart to Firestore whenever it changes (debounced)
+  useEffect(() => {
+    if (!user) return;
+    const timer = setTimeout(() => {
+      saveCartToFirestore(user.uid, cart);
+    }, 800);
+    return () => clearTimeout(timer);
+  }, [cart, user]);
+
+  // Products from Firestore
   useEffect(() => {
     const unsub = subscribeToProducts(firestoreProducts => {
-      if (firestoreProducts.length > 0) {
-        setProducts(firestoreProducts);
-      } else {
-        setProducts(SEED_PRODUCTS);
-      }
+      if (firestoreProducts.length > 0) setProducts(firestoreProducts);
+      else setProducts(SEED_PRODUCTS);
       setProductsLoading(false);
     });
     return unsub;
   }, []);
 
-  // Rebuild Fuse index when products change
   const fuse = useMemo(() => new Fuse(products, FUSE_OPTIONS), [products]);
 
   const filteredProducts = useMemo(() => {
@@ -94,12 +122,31 @@ export default function App() {
       ? fuse.search(searchQuery).map(r => r.item)
       : products;
     if (activeCategory !== 'All') results = results.filter(p => p.category === activeCategory);
-    if (stockOnly) results = results.filter(p => p.inStock);
-    if (badgeFilter !== 'all') results = results.filter(p => p.badge === badgeFilter);
+    if (stockOnly)                results = results.filter(p => p.inStock);
+    if (badgeFilter !== 'all')    results = results.filter(p => p.badge === badgeFilter);
     if (sortBy === 'low')  return [...results].sort((a, b) => a.price - b.price);
     if (sortBy === 'high') return [...results].sort((a, b) => b.price - a.price);
     return results;
   }, [searchQuery, activeCategory, sortBy, stockOnly, badgeFilter, products, fuse]);
+
+  // Wishlist toggle
+  async function handleToggleWishlist(product) {
+    if (!user) {
+      setModalMode('login');
+      setShowModal(true);
+      return;
+    }
+    const isWishlisted = wishlist.some(w => w.id === product.id);
+    if (isWishlisted) {
+      await removeFromWishlist(user.uid, product.id);
+      setWishlist(prev => prev.filter(w => w.id !== product.id));
+      showToast('Removed from wishlist');
+    } else {
+      await addToWishlist(user.uid, product);
+      setWishlist(prev => [...prev, product]);
+      showToast('Added to wishlist ❤️');
+    }
+  }
 
   function handleBuy(product) {
     if (!product.inStock) return;
@@ -136,51 +183,24 @@ export default function App() {
   }
 
   async function handleLogout() {
+    if (user) await saveCartToFirestore(user.uid, cart);
     await logoutUser();
     setUser(null);
+    setCart([]);
+    setWishlist([]);
+    window.location.reload();
   }
-
-  // function handleAddToCart(product) {
-  //   if (!product.inStock) return;
-  //   setCart(prev => {
-  //     const existing = prev.find(item => item.id === product.id);
-  //     if (existing) {
-  //       return prev.map(item => item.id === product.id ? { ...item, qty: item.qty + 1 } : item);
-  //     }
-  //     return [...prev, { ...product, qty: 1 }];
-  //   });
-  // }
 
   function handleAddToCart(product) {
     if (!product.inStock) return;
-
     setCart(prev => {
       const existing = prev.find(item => item.id === product.id);
-
-      // Remove
       if (product.qty === -1) {
         if (!existing) return prev;
-
-        if (existing.qty === 1) {
-          return prev.filter(item => item.id !== product.id);
-        }
-
-        return prev.map(item =>
-          item.id === product.id
-            ? { ...item, qty: item.qty - 1 }
-            : item
-        );
+        if (existing.qty === 1) return prev.filter(item => item.id !== product.id);
+        return prev.map(item => item.id === product.id ? { ...item, qty: item.qty - 1 } : item);
       }
-
-      // Add
-      if (existing) {
-        return prev.map(item =>
-          item.id === product.id
-            ? { ...item, qty: item.qty + 1 }
-            : item
-        );
-      }
-
+      if (existing) return prev.map(item => item.id === product.id ? { ...item, qty: item.qty + 1 } : item);
       return [...prev, { ...product, qty: 1 }];
     });
   }
@@ -201,14 +221,16 @@ export default function App() {
     window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
   }
 
-  function handleClearCart() {
-    setCart([]);
+  function handleClearCart() { setCart([]); }
+
+  function openAccountSettings(tab = 'profile') {
+    setAccountTab(tab);
+    setShowAccountSettings(true);
   }
 
   const inStockCount  = products.filter(p => p.inStock).length;
   const categoryCount = CATEGORIES.length - 1;
 
-  // Shared header props
   const headerProps = {
     user,
     searchQuery,
@@ -216,16 +238,14 @@ export default function App() {
     onLogin:           () => { setModalMode('login');    setShowModal(true); setPending(null); },
     onRegister:        () => { setModalMode('register'); setShowModal(true); setPending(null); },
     onLogout:          handleLogout,
-    onAccountSettings: () => setShowAccountSettings(true),
+    onAccountSettings: openAccountSettings,
     searchResults:     searchQuery.trim().length > 1 ? fuse.search(searchQuery).map(r => r.item) : [],
     onSearchKeyDown:   handleSearchKeyDown,
     onSearchSelect:    product => { setSearchQuery(''); setScrollPosition(window.scrollY); setDetailProduct(product); },
-    cartCount:         cart.reduce((sum, item) => sum + item.qty, 0), 
-    onCartOpen:        () => setShowCart(true), 
-    onSearchKeyDown:   handleSearchKeyDown,
+    cartCount:         cart.reduce((sum, item) => sum + item.qty, 0),
+    onCartOpen:        () => setShowCart(true),
   };
 
-  // Shared modals
   const modals = (
     <>
       {showCart && (
@@ -237,11 +257,7 @@ export default function App() {
           onCheckout={handleCartCheckout}
           onClearCart={handleClearCart}
           user={user}
-          onLoginRequired={() => {
-            setShowCart(false);
-            setModalMode('login');
-            setShowModal(true);
-          }}
+          onLoginRequired={() => { setShowCart(false); setModalMode('login'); setShowModal(true); }}
         />
       )}
       {showModal && (
@@ -252,31 +268,30 @@ export default function App() {
           onClose={() => { setShowModal(false); setPending(null); }}
         />
       )}
-      {showAccountSettings && (
+      {showAccountSettings && user && (
         <AccountSettings
           user={user}
+          initialTab={accountTab}
           onClose={() => setShowAccountSettings(false)}
           onNameUpdate={newName => setUser(prev => ({ ...prev, name: newName }))}
+          onAddToCart={handleAddToCart}
+          wishlist={wishlist}
+          onToggleWishlist={handleToggleWishlist}
         />
       )}
+      <Toast message={toast} visible={toastVisible} />
     </>
   );
 
-  // Loading screen
   if (authLoading) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--green)' }}>
-        <div style={{ color: 'var(--gold)', fontFamily: 'var(--font-display)', fontSize: '24px' }}>Divine Collections</div>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--navy)' }}>
+        <div style={{ color: 'var(--mustard)', fontFamily: 'var(--font-display)', fontSize: '24px' }}>Divine Collections</div>
       </div>
     );
   }
 
-  // Admin route
-  if (window.location.pathname === '/admin') {
-    return <AdminPanel />;
-  }
-
-  // Product detail — full page
+  if (window.location.pathname === '/admin') return <AdminPanel />;
 
   if (detailProduct) {
     return (
@@ -289,18 +304,16 @@ export default function App() {
             setDetailProduct(null);
             setTimeout(() => window.scrollTo({ top: scrollPosition, behavior: 'instant' }), 50);
           }}
-          onBuy={product => {
-            setDetailProduct(null);
-            handleBuy(product);
-          }}
+          onBuy={product => { setDetailProduct(null); handleBuy(product); }}
           onAddToCart={handleAddToCart}
+          isWishlisted={wishlist.some(w => w.id === detailProduct?.id)}
+          onToggleWishlist={handleToggleWishlist}
         />
         {modals}
       </>
     );
   }
 
-  // Main catalogue
   return (
     <>
       <Header {...headerProps} />
@@ -347,10 +360,11 @@ export default function App() {
                 key={product.id}
                 product={product}
                 cartItem={cart.find(item => item.id === product.id)}
+                isWishlisted={wishlist.some(w => w.id === product.id)}
                 onBuy={handleBuy}
-                // onViewDetail={setDetailProduct}
-                onViewDetail={product => {setScrollPosition(window.scrollY); setDetailProduct(product);}}
+                onViewDetail={product => { setScrollPosition(window.scrollY); setDetailProduct(product); }}
                 onAddToCart={handleAddToCart}
+                onToggleWishlist={handleToggleWishlist}
               />
             ))}
           </div>
@@ -368,7 +382,6 @@ export default function App() {
       </footer>
 
       <WAFloat />
-
       {modals}
     </>
   );

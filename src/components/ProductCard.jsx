@@ -7,7 +7,7 @@ const WhatsAppIcon = () => (
   </svg>
 );
 
-export default function ProductCard({ product, onBuy, onViewDetail, onAddToCart, cartItem }) {
+export default function ProductCard({ product, onBuy, onViewDetail, onAddToCart, cartItem, isWishlisted, onToggleWishlist }) {
   const { name, brand, category, price, inStock, emoji, description, badge } = product;
   const qtyInCart = cartItem ? cartItem.qty : 0;
 
@@ -31,6 +31,15 @@ export default function ProductCard({ product, onBuy, onViewDetail, onAddToCart,
         {qtyInCart > 0 && (
           <span className={styles.cartQtyBadge}>{qtyInCart} in cart</span>
         )}
+
+        <button
+          className={`${styles.heartBtn} ${isWishlisted ? styles.heartActive : ''}`}
+          onClick={e => { e.stopPropagation(); onToggleWishlist(product); }}
+          aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+        >
+          {isWishlisted ? '❤️' : '🤍'}
+        </button>
+
       </div>
 
       <div className={styles.body}>

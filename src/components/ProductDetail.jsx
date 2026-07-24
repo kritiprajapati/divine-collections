@@ -102,13 +102,6 @@ export default function ProductDetail({ product, cart, onClose, onBuy, onAddToCa
           {/* Buttons */}
           <div className={styles.btnGroup}>
 
-            {/* <button
-              className={styles.btnCart}
-              onClick={() => onAddToCart(product)}
-              disabled={!inStock}>
-              🛒 Add to Cart
-            </button> */}
-
             {inStock ? (
               qtyInCart > 0 ? (
                 <div className={styles.qtyControl}>

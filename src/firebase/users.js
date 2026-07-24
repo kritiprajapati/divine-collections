@@ -58,3 +58,53 @@ export async function getUserEnquiries(uid) {
   const data = snap.data();
   return (data.enquiries || []).slice().reverse(); // most recent first
 }
+
+// ── Cart persistence ──────────────────────────────
+
+export async function saveCartToFirestore(uid, cart) {
+  const userRef = doc(db, 'users', uid);
+  await updateDoc(userRef, { cart });
+}
+
+export async function loadCartFromFirestore(uid) {
+  const userRef = doc(db, 'users', uid);
+  const snap = await getDoc(userRef);
+  if (!snap.exists()) return [];
+  return snap.data().cart || [];
+}
+
+// ── Wishlist ──────────────────────────────────────
+
+export async function addToWishlist(uid, product) {
+  const userRef = doc(db, 'users', uid);
+  const wishlistItem = {
+    id: product.id,
+    name: product.name,
+    brand: product.brand,
+    category: product.category,
+    price: product.price,
+    originalPrice: product.originalPrice || null,
+    emoji: product.emoji,
+    imageUrl: product.imageUrl || '',
+    inStock: product.inStock,
+    badge: product.badge || null,
+  };
+  await updateDoc(userRef, {
+    wishlist: arrayUnion(wishlistItem),
+  });
+}
+
+export async function removeFromWishlist(uid, productId) {
+  const userRef = doc(db, 'users', uid);
+  const snap = await getDoc(userRef);
+  if (!snap.exists()) return;
+  const wishlist = (snap.data().wishlist || []).filter(p => p.id !== productId);
+  await updateDoc(userRef, { wishlist });
+}
+
+export async function getWishlist(uid) {
+  const userRef = doc(db, 'users', uid);
+  const snap = await getDoc(userRef);
+  if (!snap.exists()) return [];
+  return snap.data().wishlist || [];
+}

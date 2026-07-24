@@ -288,6 +288,27 @@
 }
 .btnCartDisabled:hover { background: var(--border); color: var(--text-light); }
 
+.heartBtn {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(255,255,255,0.9);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  transition: transform var(--transition), background var(--transition);
+  z-index: 2;
+}
+.heartBtn:hover { transform: scale(1.15); background: #fff; }
+.heartActive { background: #fff; }
+
 /* Responsive */
 @media (max-width: 480px) {
   .body    { padding: 12px; }
