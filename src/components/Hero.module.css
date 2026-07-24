@@ -32,17 +32,12 @@
 }
 
 /* Left */
-/* .left {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-} */
 
 .left {
   display: flex;
   flex-direction: column;
   gap: 0;
-  min-width: 0;
+  /* min-width: 0; */
 }
 
 .eyebrow {
@@ -162,6 +157,9 @@
   height:100%;
   object-fit:cover;
   display:block;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  /* will-change: transform; */
 }
 
 .slideOverlay{
@@ -243,6 +241,13 @@
 /* ===========================
    TABLETS & LARGE PHONES
 =========================== */
+
+@media (hover: hover) {
+  .slideCard:hover {
+    transform: translateY(-6px);
+  }
+}
+
 @media (max-width: 768px) {
 
   .hero {
@@ -266,6 +271,17 @@
   .heroSlider {
     width: 100%;
     max-width: 100%;
+  }
+
+  .heroSlider :global(.swiper-slide){
+    transform: none;
+    opacity: 0.55;
+    transition: opacity .35s ease;
+  }
+
+  .heroSlider :global(.swiper-slide-active){
+    transform: none;
+    opacity: 1;
   }
 
   .slideCard {

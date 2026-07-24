@@ -121,7 +121,9 @@ export default function Hero({ totalProducts, inStockCount, categoryCount, onCat
             centeredSlides={true}
             spaceBetween={18}
             loop={true}
-            speed={700}
+            speed={500}
+            preloadImages={true}
+            updateOnImagesReady={true}
             autoplay={{
               delay: 3000,
               disableOnInteraction: false,
