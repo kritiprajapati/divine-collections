@@ -336,13 +336,54 @@
 }
 
 @media (max-width: 480px) {
-  .inner  { padding: 0 14px; }
-  .row1   { gap: 8px; }
-  .logoName { font-size: 14px; }
-  .logoSub  { display: none; }
-  .btnOutline { padding: 0 10px; font-size: 12px; }
-  .btnmustard    { padding: 0 10px; font-size: 12px; }
-  .userName   { display: none; }
-  .userPillBtn { padding: 5px 8px; }
-  .dropdown   { min-width: 200px; }
+
+  .inner {padding: 0 10px;}
+  .row1 {height: 58px; gap: 6px;}
+  .logo {gap: 6px;}
+
+  .logoIcon {
+    width: 34px;
+    height: 34px;
+  }
+
+  .logoName {
+    font-size: 12px;
+    max-width: 95px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .logoSub {
+    display: none;
+  }
+
+  .actions {
+    gap: 4px;
+  }
+
+  .cartBtn {
+    width: 34px;
+    height: 34px;
+    font-size: 16px;
+  }
+
+  .btnOutline,
+  .btnmustard {
+    height: 34px;
+    padding: 0 10px;
+    font-size: 11px;
+  }
+
+  .userName {
+    display: none;
+  }
+
+  .userPillBtn {
+    padding: 4px 6px;
+  }
+
+  .dropdown {
+    min-width: 190px;
+  }
 }
