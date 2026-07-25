@@ -253,6 +253,19 @@
   color: var(--navy);
 }
 
+.offerTag {
+  font-size: 11px;
+  color: #16A34A;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.originalPrice {
+  font-size: 11px;
+  color: #16A34A;
+  font-weight: 500;
+}
+
 .checkoutBtn {
   width: 100%;
   height: 52px;

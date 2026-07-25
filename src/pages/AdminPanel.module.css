@@ -127,6 +127,61 @@
   color: rgba(255, 255, 255, 0.85);
 }
 
+/* Admin tabs */
+.adminTabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+  border-bottom: 2px solid var(--border-light);
+  padding-bottom: 0;
+}
+
+.adminTab {
+  height: 40px;
+  padding: 0 20px;
+  background: none;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: all var(--transition);
+}
+.adminTab:hover { color: var(--text); }
+.adminTabActive {
+  color: var(--green);
+  border-bottom-color: var(--green);
+  font-weight: 600;
+}
+
+/* Offer preview */
+.offerPreview {
+  background: var(--sage-light);
+  border-radius: var(--r);
+  padding: 12px 16px;
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+/* Cancel button */
+.btnCancel {
+  height: 40px;
+  padding: 0 16px;
+  border-radius: var(--r);
+  border: 1.5px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.btnCancel:hover { border-color: var(--text-muted); }
+
 /* Inner */
 .inner {
   max-width: 1200px;

@@ -16,6 +16,7 @@ import AccountSettings from './components/AccountSettings';
 import CartDrawer      from './components/CartDrawer';
 import MarqueeBanner   from './components/MarqueeBanner';
 import Toast           from './components/Toast';
+import { subscribeToOffers, applyOffer } from './firebase/offers';
 
 import { saveUserProfile, logEnquiry, saveCartToFirestore, loadCartFromFirestore, addToWishlist, removeFromWishlist, getWishlist } from './firebase/users';
 import { PRODUCTS as SEED_PRODUCTS, CATEGORIES } from './data/products';
@@ -40,6 +41,7 @@ export default function App() {
   // Products
   const [products, setProducts]               = useState(SEED_PRODUCTS);
   const [productsLoading, setProductsLoading] = useState(true);
+  const [offers, setOffers] = useState([]);
 
   // Product detail
   const [detailProduct, setDetailProduct]   = useState(null);
@@ -103,15 +105,6 @@ export default function App() {
     return unsub;
   }, []);
 
-  // Save cart to Firestore whenever it changes (debounced)
-  // useEffect(() => {
-  //   if (!user || !cartLoaded) return;
-  //   const timer = setTimeout(() => {
-  //     saveCartToFirestore(user.uid, cart);
-  //   }, 800);
-  //   return () => clearTimeout(timer);
-  // }, [cart, user, cartLoaded]);
-
   useEffect(() => {
     if (!user) return;
     if (!cartLoadedRef.current) return;
@@ -122,15 +115,6 @@ export default function App() {
     return () => clearTimeout(timer);
   }, [cart, user]);
 
-  // useEffect(() => {
-  //   if (!user || !cartLoaded) return;
-  //   if (cart.length === 0) return; // never save empty cart
-  //   const timer = setTimeout(() => {
-  //     saveCartToFirestore(user.uid, cart);
-  //   }, 800);
-  //   return () => clearTimeout(timer);
-  // }, [cart, user, cartLoaded]);
-
   // Products from Firestore
   useEffect(() => {
     const unsub = subscribeToProducts(firestoreProducts => {
@@ -138,6 +122,11 @@ export default function App() {
       else setProducts(SEED_PRODUCTS);
       setProductsLoading(false);
     });
+    return unsub;
+  }, []);
+
+  useEffect(() => {
+    const unsub = subscribeToOffers(setOffers);
     return unsub;
   }, []);
 
@@ -242,9 +231,15 @@ export default function App() {
     setCart(prev => prev.filter(item => item.id !== id));
   }
 
+
   function handleCartCheckout() {
-    const itemsList = cart.map(item => `• ${item.name} x${item.qty} — ₹${item.price * item.qty}`).join('\n');
-    const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+    const cartWithOffers = cart.map(item => applyOffer(item, offers));
+    const itemsList = cartWithOffers.map(item =>
+      item.offer
+        ? `• ${item.name} x${item.qty} — ₹${item.discountedTotal} (Buy ${item.offer.buyX} Get ${item.offer.getY} Free)`
+        : `• ${item.name} x${item.qty} — ₹${item.price * item.qty}`
+    ).join('\n');
+    const total = cartWithOffers.reduce((sum, item) => sum + item.discountedTotal, 0);
     const message = `Hi! I'd like to order the following:\n\n${itemsList}\n\nTotal: ₹${total}`;
     window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
   }
@@ -279,6 +274,7 @@ export default function App() {
       {showCart && (
         <CartDrawer
           cart={cart}
+          offers={offers}
           onClose={() => setShowCart(false)}
           onUpdateQty={handleUpdateQty}
           onRemove={handleRemoveFromCart}

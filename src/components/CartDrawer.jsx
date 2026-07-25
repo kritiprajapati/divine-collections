@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from './CartDrawer.module.css';
+import { applyOffer } from '../firebase/offers';
 
 const WhatsAppIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
@@ -8,6 +9,7 @@ const WhatsAppIcon = () => (
 );
 
 export default function CartDrawer({ cart, onClose, onUpdateQty, onRemove, onCheckout, onClearCart, user, onLoginRequired }) {
+  const cartWithOffers = cart.map(item => applyOffer(item, offers));
   const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
   const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
 
@@ -45,7 +47,7 @@ export default function CartDrawer({ cart, onClose, onUpdateQty, onRemove, onChe
           <>
             {/* Items list */}
             <div className={styles.items}>
-              {cart.map(item => (
+              {cartWithOffers.map(item => (
                 <div key={item.id} className={styles.item}>
                   <div className={styles.itemImage}>
                     {item.imageUrl
@@ -54,7 +56,17 @@ export default function CartDrawer({ cart, onClose, onUpdateQty, onRemove, onChe
                   </div>
                   <div className={styles.itemInfo}>
                     <div className={styles.itemName}>{item.name}</div>
-                    <div className={styles.itemPrice}>₹{item.price} × {item.qty} = <strong>₹{item.price * item.qty}</strong></div>
+                    {item.offer && (
+                      <div className={styles.offerTag}>
+                        🎁 Buy {item.offer.buyX} Get {item.offer.getY} Free
+                      </div>
+                    )}
+                    <div className={styles.itemPrice}>
+                    {item.offer
+                      ? <>₹{item.discountedTotal} <span className={styles.originalPrice}>(saved ₹{item.price * item.qty - item.discountedTotal})</span></>
+                      : <>₹{item.price} × {item.qty} = <strong>₹{item.discountedTotal}</strong></>
+                    }
+                  </div>
                   </div>
                   <div className={styles.itemRight}>
                     <div className={styles.qtyControl}>
