@@ -55,6 +55,8 @@ export default function App() {
   // Cart
   const [cart, setCart]         = useState([]);
   const [showCart, setShowCart] = useState(false);
+  const [cartLoaded, setCartLoaded] = useState(false);
+  const cartLoadedRef = React.useRef(false);
 
   // Wishlist
   const [wishlist, setWishlist] = useState([]);
@@ -69,7 +71,6 @@ export default function App() {
     setTimeout(() => setToastVisible(false), 2000);
   }
 
-  // Listen to Firebase auth state
   useEffect(() => {
     const unsub = onAuthChange(async firebaseUser => {
       if (firebaseUser) {
@@ -79,14 +80,20 @@ export default function App() {
           uid:   firebaseUser.uid,
         };
         setUser(userData);
-        saveUserProfile(userData);
-        // Restore cart from Firestore
+        await saveUserProfile(userData);
+
+        // Load cart from Firestore
         const savedCart = await loadCartFromFirestore(firebaseUser.uid);
-        if (savedCart.length > 0) setCart(savedCart);
-        // Load wishlist
         const savedWishlist = await getWishlist(firebaseUser.uid);
-        setWishlist(savedWishlist);
+
+        cartLoadedRef.current = false;
+        setCart(savedCart && savedCart.length > 0 ? savedCart : []);
+        setWishlist(savedWishlist || []);
+        cartLoadedRef.current = true;
+        setCartLoaded(true);
       } else {
+        cartLoadedRef.current = false;
+        setCartLoaded(false);
         setUser(null);
         setCart([]);
         setWishlist([]);
@@ -97,13 +104,32 @@ export default function App() {
   }, []);
 
   // Save cart to Firestore whenever it changes (debounced)
+  // useEffect(() => {
+  //   if (!user || !cartLoaded) return;
+  //   const timer = setTimeout(() => {
+  //     saveCartToFirestore(user.uid, cart);
+  //   }, 800);
+  //   return () => clearTimeout(timer);
+  // }, [cart, user, cartLoaded]);
+
   useEffect(() => {
     if (!user) return;
+    if (!cartLoadedRef.current) return;
+    if (cart.length === 0) return;
     const timer = setTimeout(() => {
       saveCartToFirestore(user.uid, cart);
     }, 800);
     return () => clearTimeout(timer);
   }, [cart, user]);
+
+  // useEffect(() => {
+  //   if (!user || !cartLoaded) return;
+  //   if (cart.length === 0) return; // never save empty cart
+  //   const timer = setTimeout(() => {
+  //     saveCartToFirestore(user.uid, cart);
+  //   }, 800);
+  //   return () => clearTimeout(timer);
+  // }, [cart, user, cartLoaded]);
 
   // Products from Firestore
   useEffect(() => {
@@ -161,13 +187,14 @@ export default function App() {
   }
 
   function handleAuth(userData) {
-    setUser(userData);
     setShowModal(false);
     saveUserProfile(userData);
     if (pendingProduct) {
-      window.open(buildWAUrl(pendingProduct.name, pendingProduct.price), '_blank', 'noopener,noreferrer');
-      logEnquiry(userData.uid, pendingProduct);
+      const product = pendingProduct;
       setPending(null);
+      setTimeout(() => {
+        window.open(buildWAUrl(product.name, product.price), '_blank', 'noopener,noreferrer');
+      }, 500);
     }
   }
 
@@ -183,7 +210,8 @@ export default function App() {
   }
 
   async function handleLogout() {
-    if (user) await saveCartToFirestore(user.uid, cart);
+    cartLoadedRef.current = false;
+    setCartLoaded(false); 
     await logoutUser();
     setUser(null);
     setCart([]);

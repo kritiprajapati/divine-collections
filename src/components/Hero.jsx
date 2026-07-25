@@ -57,70 +57,103 @@ const SHOWCASE_ITEMS = [
   }
 ];
 
-export default function Hero({ totalProducts, inStockCount, categoryCount, onCategoryClick }) {
-  // const [activeIndex, setActiveIndex] = useState(0);
-
-  // useEffect(() => {
-  //   const timer = setInterval(() => {
-  //     setActiveIndex(i => (i + 1) % SHOWCASE_ITEMS.length);
-  //   }, 3000);
-  //   return () => clearInterval(timer);
-  // }, []);
-
+export default function Hero({
+  totalProducts,
+  inStockCount,
+  categoryCount,
+  onCategoryClick,
+}) {
   function handleCategoryClick(category) {
     onCategoryClick(category);
-    const el = document.getElementById('products');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+
+    const el = document.getElementById("products");
+    if (el) {
+      el.scrollIntoView({
+        behavior: "smooth",
+      });
+    }
   }
 
   function scrollToProducts() {
-    const el = document.getElementById('products');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+    const el = document.getElementById("products");
+
+    if (el) {
+      el.scrollIntoView({
+        behavior: "smooth",
+      });
+    }
   }
 
   return (
     <section className={styles.hero}>
       <div className={styles.inner}>
-        {/* Left: text */}
+        {/* LEFT */}
         <div className={styles.left}>
-          <p className={styles.eyebrow}>✦ Welcome to Divine Collections</p>
+          <p className={styles.eyebrow}>
+            ✦ Welcome to Divine Collections
+          </p>
+
           <h1 className={styles.heading}>
-            Your Trusted Store for{' '}
-            <em className={styles.accent}>Premium Products at Factory Prices</em>
+            Your Trusted Store for{" "}
+            <em className={styles.accent}>
+              Premium Products at Factory Prices
+            </em>
           </h1>
+
           <p className={styles.sub}>
-            Skincare, cosmetics, crockery, kitchen essentials, gifting &amp; more — all under one roof.
+            Skincare, cosmetics, crockery, kitchen essentials,
+            gifting &amp; more — all under one roof.
           </p>
 
           <div className={styles.stats}>
             <div className={styles.stat}>
-              <div className={styles.statNum}>{totalProducts}+</div>
-              <div className={styles.statLabel}>Products</div>
+              <div className={styles.statNum}>
+                {totalProducts}+
+              </div>
+              <div className={styles.statLabel}>
+                Products
+              </div>
             </div>
+
             <div className={styles.statDivider} />
+
             <div className={styles.stat}>
-              <div className={styles.statNum}>{inStockCount}</div>
-              <div className={styles.statLabel}>In Stock</div>
+              <div className={styles.statNum}>
+                {inStockCount}
+              </div>
+              <div className={styles.statLabel}>
+                In Stock
+              </div>
             </div>
+
             <div className={styles.statDivider} />
+
             <div className={styles.stat}>
-              <div className={styles.statNum}>{categoryCount}</div>
-              <div className={styles.statLabel}>Categories</div>
+              <div className={styles.statNum}>
+                {categoryCount}
+              </div>
+              <div className={styles.statLabel}>
+                Categories
+              </div>
             </div>
           </div>
 
-          <button className={styles.scrollBtn} onClick={scrollToProducts}>
+          <button
+            className={styles.scrollBtn}
+            onClick={scrollToProducts}
+          >
             Shop Now ↓
           </button>
         </div>
 
+        {/* RIGHT */}
         <div className={styles.right}>
           <Swiper
             modules={[Autoplay, Pagination]}
-            slidesPerView={1.25}
+            className={styles.heroSlider}
+            loop={true}
             centeredSlides={true}
             spaceBetween={18}
-            loop={true}
             speed={500}
             preloadImages={true}
             updateOnImagesReady={true}
@@ -131,53 +164,58 @@ export default function Hero({ totalProducts, inStockCount, categoryCount, onCat
             pagination={{
               clickable: true,
             }}
-            className={styles.heroSlider}
             breakpoints={{
-              768: {
-                slidesPerView: 1.4,
+              // Phones
+              0: {
+                slidesPerView: 1.08,
               },
+
+              // Large phones
+              480: {
+                slidesPerView: 1.12,
+              },
+
+              // Tablets & Desktop
+              // (same as your original desktop)
+              768: {
+                slidesPerView: 1.25,
+              },
+
               1024: {
-                slidesPerView: 1.35,
+                slidesPerView: 1.25,
               },
             }}
           >
-
             {SHOWCASE_ITEMS.map((item, index) => (
-
               <SwiperSlide key={index}>
-
                 <div
                   className={styles.slideCard}
-                  onClick={() => handleCategoryClick(item.category)}
+                  onClick={() =>
+                    handleCategoryClick(item.category)
+                  }
                 >
-
                   <img
                     src={item.image}
                     alt={item.label}
                     className={styles.slideImage}
+                    loading="eager"
                   />
 
                   <div className={styles.slideOverlay}>
-
                     <h3>{item.label}</h3>
-
                     <p>{item.subtitle}</p>
-
                   </div>
-
                 </div>
-
               </SwiperSlide>
-
             ))}
-
           </Swiper>
-
         </div>
-
       </div>
 
-      <div className={styles.scrollIndicator} onClick={scrollToProducts}>
+      <div
+        className={styles.scrollIndicator}
+        onClick={scrollToProducts}
+      >
         <div className={styles.scrollDot} />
       </div>
     </section>

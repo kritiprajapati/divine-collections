@@ -15,7 +15,7 @@ const ShareIcon = () => (
   </svg>
 );
 
-export default function ProductDetail({ product, cart, onClose, onBuy, onAddToCart }) {
+export default function ProductDetail({ product, cart, onClose, onBuy, onAddToCart, isWishlisted, onToggleWishlist }) {
   const [shareCopied, setShareCopied] = React.useState(false);
   const cartItem = cart?.find(item => item.id === product.id);
   const qtyInCart = cartItem ? cartItem.qty : 0;
@@ -44,13 +44,28 @@ export default function ProductDetail({ product, cart, onClose, onBuy, onAddToCa
   return (
     <div className={styles.page}>
       {/* Sticky top bar with back button */}
-      <div className={styles.topBar}>
+      {/* <div className={styles.topBar}>
         <button className={styles.backBtn} onClick={onClose}>
           ← Back
         </button>
         <span className={styles.breadcrumb}>
           Divine Collections / {category} / {name}
         </span>
+      </div> */}
+
+      <div className={styles.topBar}>
+        <button className={styles.backBtn} onClick={onClose}>← Back</button>
+        <span className={styles.breadcrumb}>Divine Collections / {category} / {name}</span>
+        <button
+          className={`${styles.wishlistBtn} ${isWishlisted ? styles.wishlistActive : ''}`}
+          onClick={() => onToggleWishlist(product)}
+          aria-label={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+        >
+          <svg viewBox="0 0 24 24" fill={isWishlisted ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" className={styles.heartIcon}>
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+          {isWishlisted ? 'Wishlisted' : 'Wishlist'}
+        </button>
       </div>
 
       <div className={styles.container}>
