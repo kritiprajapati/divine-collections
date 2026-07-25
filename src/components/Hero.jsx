@@ -57,9 +57,21 @@ const SHOWCASE_ITEMS = [
   },
   {
     label: "Home Essentials",
-    category: "Appliances",
+    category: "Home Essentials",
     image: "",
     subtitle: "Smart Solutions for Modern Living"
+  },
+  {
+    label: "Snacks",
+    category: "Snacks",
+    image: "",
+    subtitle: "Delicious Bites, Anytime"
+  },
+  {
+    label: "Stationary",
+    category: "Stationary",
+    image: "",
+    subtitle: "Tools for Learning & Productivity"
   },
 ];
 

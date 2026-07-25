@@ -9,6 +9,8 @@ export const CATEGORIES = [
   'Cosmetics',
   'Gifting',
   'Home Essentials',
+  'Snacks',
+  'Stationary',
 ];
 
 export const PRODUCTS = [
