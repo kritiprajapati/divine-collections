@@ -11,6 +11,7 @@ export const CATEGORIES = [
   'Home Essentials',
   'Snacks',
   'Stationary',
+  'PetCare'
 ];
 
 export const PRODUCTS = [

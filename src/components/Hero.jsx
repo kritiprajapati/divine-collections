@@ -73,6 +73,12 @@ const SHOWCASE_ITEMS = [
     image: "",
     subtitle: "Tools for Learning & Productivity"
   },
+  {
+    label: "PetCare",
+    category: "PetCare",
+    image: "",
+    subtitle: "Care for your Furry Friends"
+  },
 ];
 
 export default function Hero({
