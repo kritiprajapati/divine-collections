@@ -124,7 +124,7 @@
 
 .adminEmail {
   font-size: 13px;
-  color: rgba(255,255,255,0.7);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 /* Inner */
@@ -428,9 +428,9 @@
   height: 40px;
   padding: 0 16px;
   border-radius: var(--r);
-  border: 1.5px solid var(--border);
-  background: transparent;
-  color: var(--text);
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
   font-family: var(--font-body);
   font-size: 13px;
   font-weight: 500;
@@ -440,7 +440,10 @@
   display: inline-flex;
   align-items: center;
 }
-.btnOutline:hover { border-color: var(--navy); color: var(--navy); }
+.btnOutline:hover { 
+  background: rgba(255, 255, 255, 0.25); 
+  border-color: #fff;
+}
 
 .btnSeed {
   height: 40px;

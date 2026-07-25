@@ -8,6 +8,7 @@ export const CATEGORIES = [
   'Crockery',
   'Cosmetics',
   'Gifting',
+  'Home Essentials',
 ];
 
 export const PRODUCTS = [

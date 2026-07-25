@@ -54,7 +54,13 @@ const SHOWCASE_ITEMS = [
     category: "Gifting",
     image: "https://res.cloudinary.com/su6mdywy/image/upload/v1784743269/gifting_elunyx.png",
     subtitle: "Gift hampers & more"
-  }
+  },
+  {
+    label: "Home Essentials",
+    category: "Appliances",
+    image: "",
+    subtitle: "Smart Solutions for Modern Living"
+  },
 ];
 
 export default function Hero({
