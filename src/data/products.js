@@ -10,6 +10,7 @@ export const CATEGORIES = [
   'Gifting',
   'Home Essentials',
   'Snacks',
+  'Health & Wellness',
   'Stationary',
   'PetCare'
 ];

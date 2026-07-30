@@ -68,6 +68,12 @@ const SHOWCASE_ITEMS = [
     subtitle: "Delicious Bites, Anytime"
   },
   {
+    label: "Health & Wellness",
+    category: "Health & Wellness",
+    image: "",
+    subtitle: "Your Journey to Better Health"
+  },
+  {
     label: "Stationary",
     category: "Stationary",
     image: "",
